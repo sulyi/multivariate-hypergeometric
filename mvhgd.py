@@ -37,7 +37,7 @@ class Drawing(list):
     
     
     def draw_one_from_each_possible( self, reverse=False ):
-        # FIXME: this is obsolete LEvel.next_level does this 
+        # FIXME: this is obsolete Level.next_level does this 
         '''
         enumerating possible drawings
         if a category has no element can't be drawn from it
@@ -102,15 +102,15 @@ class Level( Pretty ):
         else:
             self.tmatrix = scipy.empty(( 0, 0 ))
     
-    # TODO: __str__ parse tmatrix, like previous version one that I've lost
-    
+    # TODO: __str__ parse tmatrix, like previous version, one that I've lost in quite pointless circumstances    
+        
     def next_level( self, reverse=False ):
-        # TODO: turn this into a generator 
+        # TODO: turn this into a generator, or should I? 
         
         if self:
             following = list()
             drawptr = list(0 for i in range(len(self[0])))
-            basemidx = len(self[0]) - 1 # TODO: send this right to Hell
+#            basemidx = len(self[0]) - 1 # TODO: also see sanity check 
 
             data=list()
             indecies = list()
@@ -131,7 +131,7 @@ class Level( Pretty ):
                         if d[i]:
                             indecies.append(drawptr[i])
                             data.append(d[i])
-                            test(d, following[drawptr[i]], basemidx - i) # TODO: also purge from this, or at least make it more decent
+#                            test(d, following[drawptr[i]], basemidx - i) # TODO: sanity check, should be purged from here, or at least should be made more decent
                             drawptr[i] += 1
                         elif drawptr[i] < len(following) and following[drawptr[i]].delta >= d.delta:
                                 drawptr[i] = len(following)
