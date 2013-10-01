@@ -15,6 +15,7 @@ import scipy.sparse
 class Drawing(list):
     ''''
     event happened by drawing one element from an urn
+    gamma and delta variables aiding the enumeration of them
     '''
     
     def __init__( self, iterable, gamma=0, delta=0):
@@ -41,10 +42,11 @@ class Pretty( list ):
         super( Pretty, self ).__init__( iterable )
         
     def __str__( self, depth=1 ):
-        return '[ %s ]' %  (',\n' + '  ' * depth).join( i.__str__(depth+1) if isinstance(i, Pretty) else str(i) for i in self )
+        return '[ %s ]' %  (',\n '+' ' * depth).join( i.__str__(depth+2) if isinstance(i, Pretty) else str(i) for i in self )
    
-    def __repr__( self, depth=1 ):
-        return 'Pretty([ %s\n%s])' %  ( (',\n' + ' '*9*depth).join( i.__repr__(depth+1) if isinstance(i, Pretty) else repr (i) for i in self ), ' '*(9*depth-2) )
+    def __repr__( self, depth=0 ):
+        depth+=len(self.__class__.__name__)+3
+        return '%s([ %s\n%s])' %  ( self.__class__.__name__, (',\n'+' '*depth).join( i.__repr__(depth) if isinstance(i, Pretty) else repr (i) for i in self ), ' '*(depth-1) )
 
 class Level( Pretty ):
     '''a enumeration of Drawing with same amount drawn from them, hence sum of elements in the categories are constant
@@ -91,6 +93,7 @@ class Level( Pretty ):
                 denominator = float(denominator)
             else:
                 denominator = float( sum(self[0]) )
+                
             following = list()
             drawptr = list(0 for i in range(len(self[0])))
 
