@@ -83,7 +83,7 @@ class Level( Pretty ):
     # TODO: __str__ parse twmatrix, it can show which branch of the algorithm added the value / Drawing    
     # TODO: dia plugin, just another parser
      
-    def next_level( self, reverse=False, denominator=None ):
+    def next_level( self, reverse=False, denominator=None, target=None ):
         '''enumerates the next Level, draws one farther element from each Drawing
            also calculates it's twmatrix
         '''
@@ -101,9 +101,13 @@ class Level( Pretty ):
             indices = list()
             indptr = list()
             
+            if target is None:
+                target = list(drawptr)
+                
             indptr.append(len(indices))
             
             for d in self:
+                
                 if reverse:
                     d.reverse()
                 num_of_0s = d.gamma - d.delta
@@ -112,7 +116,7 @@ class Level( Pretty ):
                     
                     if i < d.gamma:
                         
-                        if k:
+                        if k > target[i]:
                             indices.append(drawptr[i])
                             data.append(k)
                             drawptr[i] += 1
@@ -120,7 +124,7 @@ class Level( Pretty ):
                                 drawptr[i] = len(following)
                     else:
                         
-                        if k:
+                        if k  > target[i]:
                             child = Drawing( d, i, i - num_of_0s)
                             child[i] -= 1
                             if reverse:
@@ -135,6 +139,7 @@ class Level( Pretty ):
                 if reverse:
                     d.reverse()
                 indptr.append(len(indices))
+            
             twm = scipy.sparse.csr_matrix(( scipy.array(data), scipy.array(indices), scipy.array(indptr) )) / denominator
             return Level( following, twm )
         
@@ -142,21 +147,24 @@ class Level( Pretty ):
             raise ValueError("Nothing follows an empty Level.")
 
 
-def calculate( base ):
+def calculate( base, reversed=False, target=None ):
     ''' enumerating all possible Drawing from base 
         and calculating transition weight matrices of Levels
         product of previous Levels' twmatrices gives the probabilities of each element of the Level
         base contains number of elements in each category   
     '''
     
-    summa = sum( base )
+    roof = sum( base )
+    floor = 0 if target is None else sum( target )
+    
     previouse = Level( [ Drawing(base) ] )
+    
     lattice = Pretty()
     
     lattice.append( previouse )
         
-    for l in range( summa, 0, -1 ):
-        previouse = previouse.next_level( True, l )
+    for l in range( roof, floor, -1 ):
+        previouse = previouse.next_level( reversed, l, target )
         lattice.append( previouse )
          
     return lattice
