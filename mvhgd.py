@@ -75,35 +75,37 @@ class Level( Pretty ):
                     raise ValueError( 'number of Drawing (%d) does not equal to number of columns of twmatrix (%d)' % ( twmatrix.shape[0], len(iterable) ))
             else:
                 # I don't think this has any sense unless len(iterable) is one 
-                self.twmatrix = scipy.sparse.csr_matrix(scipy.ones(( 1, len(iterable) )))
+                self.twmatrix = scipy.sparse.csr_matrix( scipy.ones(( 1, len(iterable) )) )
         else:
-            self.twmatrix = scipy.empty((0,0))
+            self.twmatrix = scipy.empty(( 0, 0 ))
             
     
     # TODO: __str__ parse twmatrix, it can show which branch of the algorithm added the value / Drawing    
     # TODO: dia plugin, just another parser
      
-    def next_level( self, reverse=False, denominator=None, target=None ):
+    def next_level( self, target=None, denominator=None, reverse=False ):
         '''enumerates the next Level, draws one farther element from each Drawing
-           also calculates it's twmatrix
+           target limits the enumeration to only those from which the target is reachable
+           also calculates next Level's twmatrix
         '''
         
         if self:
             if denominator:
                 denominator = float(denominator)
             else:
-                denominator = float( sum(self[0]) )
+                denominator = float(sum(self[0]))
                 
             following = list()
-            drawptr = list(0 for i in range(len(self[0])))
+            drawptr = list( 0 for i in range(len(self[0])) )
 
             data=list()
             indices = list()
             indptr = list()
             
             if target is None:
+                # cloning zeros
                 target = list(drawptr)
-                
+            
             indptr.append(len(indices))
             
             for d in self:
@@ -117,38 +119,39 @@ class Level( Pretty ):
                     if i < d.gamma:
                         
                         if k > target[i]:
-                            indices.append(drawptr[i])
+                            indices.append( drawptr[i] )
                             data.append(k)
                             drawptr[i] += 1
                         elif drawptr[i] < len(following) and following[drawptr[i]].delta >= d.delta:
-                                drawptr[i] = len(following)
+                                drawptr[ i ] = len(following)
                     else:
                         
                         if k  > target[i]:
-                            child = Drawing( d, i, i - num_of_0s)
+                            child = Drawing( d, i, i-num_of_0s )
                             child[i] -= 1
                             if reverse:
                                 child.reverse()
-                            indices.append(len(following))
-                            data.append(k)
-                            following.append(child)
+                            indices.append( len(following) )
+                            data.append( k )
+                            following.append( child )
                         else:
                             num_of_0s += 1
-                        drawptr[ i ] = len(following)
+                        drawptr [i] = len(following)
                             
                 if reverse:
                     d.reverse()
-                indptr.append(len(indices))
+                indptr.append( len(indices) )
             
             twm = scipy.sparse.csr_matrix(( scipy.array(data), scipy.array(indices), scipy.array(indptr) )) / denominator
             return Level( following, twm )
         
         else:
-            raise ValueError("Nothing follows an empty Level.")
+            raise ValueError( "Nothing follows an empty Level." )
 
 
-def calculate( base, reversed=False, target=None ):
-    ''' enumerating all possible Drawing from base 
+def calculate( base, target=None, reversed=False ):
+    ''' enumerating all possible Drawing from base
+        target limits the enumeration to only those from which the target is reachable    
         and calculating transition weight matrices of Levels
         product of previous Levels' twmatrices gives the probabilities of each element of the Level
         base contains number of elements in each category   
@@ -157,14 +160,13 @@ def calculate( base, reversed=False, target=None ):
     roof = sum( base )
     floor = 0 if target is None else sum( target )
     
-    previouse = Level( [ Drawing(base) ] )
+    previouse = Level( [ Drawing( base ) ] )
     
     lattice = Pretty()
-    
     lattice.append( previouse )
         
     for l in range( roof, floor, -1 ):
-        previouse = previouse.next_level( reversed, l, target )
+        previouse = previouse.next_level( target, l, reversed )
         lattice.append( previouse )
          
     return lattice
