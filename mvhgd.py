@@ -83,7 +83,7 @@ class Level( Pretty ):
     # TODO: __str__ parse twmatrix, it can show which branch of the algorithm added the value / Drawing    
     # TODO: dia plugin, just another parser
      
-    def next_level( self, target=None, denominator=None, reverse=False ):
+    def next_level( self, target=None, denominator=None ):
         '''enumerates the next Level, draws one farther element from each Drawing
            target limits the enumeration to only those from which the target is reachable
            also calculates next Level's twmatrix
@@ -110,8 +110,6 @@ class Level( Pretty ):
             
             for d in self:
                 
-                if reverse:
-                    d.reverse()
                 num_of_0s = d.gamma - d.delta
                     
                 for i,k in enumerate(d): 
@@ -129,8 +127,6 @@ class Level( Pretty ):
                         if k  > target[i]:
                             child = Drawing( d, i, i-num_of_0s )
                             child[i] -= 1
-                            if reverse:
-                                child.reverse()
                             indices.append( len(following) )
                             data.append( k )
                             following.append( child )
@@ -138,8 +134,6 @@ class Level( Pretty ):
                             num_of_0s += 1
                         drawptr [i] = len(following)
                             
-                if reverse:
-                    d.reverse()
                 indptr.append( len(indices) )
             
             twm = scipy.sparse.csr_matrix(( scipy.array(data), scipy.array(indices), scipy.array(indptr) )) / denominator
@@ -149,7 +143,7 @@ class Level( Pretty ):
             raise ValueError( "Nothing follows an empty Level." )
 
 
-def calculate( base, target=None, reversed=False ):
+def calculate( base, target=None ):
     ''' enumerating all possible Drawing from base
         target limits the enumeration to only those from which the target is reachable    
         and calculating transition weight matrices of Levels
@@ -166,7 +160,7 @@ def calculate( base, target=None, reversed=False ):
     lattice.append( previouse )
         
     for l in range( roof, floor, -1 ):
-        previouse = previouse.next_level( target, l, reversed )
+        previouse = previouse.next_level( target, l )
         lattice.append( previouse )
          
     return lattice
