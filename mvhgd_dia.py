@@ -34,7 +34,7 @@ class CInputDialog :
         box1.pack_start(box2)
         box2.show()
         
-        label1 = gtk.Label("Please specify the number of elements by each category\nseparated with comma, space and/or line-breaks")
+        label1 = gtk.Label("Please specify the number of elements by each category\nseparated with comma and/or semicolon, space, line-breaks")
         label1.set_alignment(0,0)
         box2.pack_start(label1, False, False)
         label1.show()
@@ -78,8 +78,9 @@ class CInputDialog :
         instr = self.text.get_text(*self.text.get_bounds())
         # processing input text
         instr=instr.replace(" ", ",")
+        instr=instr.replace(";", ",")
         instr=instr.replace("\n", ",")
-    
+        
         array = list()
         errors = list()
                 
