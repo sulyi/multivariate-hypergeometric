@@ -1,4 +1,5 @@
 #/usr/bin/env python
+#.dia/python/mvhgd_dia.py
 #coding: UTF-8
 
 '''
@@ -6,8 +7,6 @@ Created on 2013.11.03.
 
 @author: Ákos Sülyi
 '''
-
-#.dia/python/mvhgd_dia.py
 
 import dia 
 
