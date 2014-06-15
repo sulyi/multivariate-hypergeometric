@@ -1,6 +1,7 @@
 #/usr/bin/env python
+#-*- coding: UTF-8 -*-
+
 #.dia/python/mvhgd_dia.py
-#coding: UTF-8
 
 '''
 Created on 2013.11.03.

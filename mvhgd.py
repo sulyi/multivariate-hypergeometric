@@ -1,5 +1,5 @@
 #/usr/bin/env python
-#coding: UTF-8
+#-*- coding: UTF-8 -*-
 
 '''
 Combinatoric enumeration of the events of multivariate hypergeometric distribution   
