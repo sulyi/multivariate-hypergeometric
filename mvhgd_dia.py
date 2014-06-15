@@ -104,7 +104,6 @@ class CInputDialog :
     def on_delete (self, *args) :
         self.win.destroy ()
 
-
 def mvhgd_cb(data,flags):
     dlg = CInputDialog(dia.active_display().diagram, data)
 
@@ -118,13 +117,14 @@ def draw_lattice(data, array):
     layer = data.active_layer
     
     lattice = mvhgd.calculate(array)
+    droot = next(lattice)[0]
     
     drawn = list()
     
     root,h1,h2=dia.get_object_type("Flowchart - Ellipse").create(0,0)
-    root.properties["text"] = ','.join(map(str,lattice[0][0]))
+    root.properties["text"] = ','.join(map(str,droot))
     
-    height = 3 * root.properties["elem_height"].value
+    height = len(droot) * root.properties["elem_height"].value
     width = root.properties["elem_width"].value + 1
     layer.add_object(root)
     
@@ -133,7 +133,7 @@ def draw_lattice(data, array):
     y = 0
     x = 0
         
-    for l,level in enumerate(lattice[1:],1):
+    for l,level in enumerate(lattice,1):
         y += height
         x =  width * (len(level) - 1) / -2.0
         
