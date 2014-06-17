@@ -153,7 +153,7 @@ def calculate( base, target=None ):
         product of twmatrices of previous Levels gives the probabilities of each Drawing of a Level
         
         see also: doc at Level
-        '''
+    '''
     
     roof = sum( base )
     floor = 0 if target is None else sum( target )
@@ -172,5 +172,4 @@ def produce_probabilities( base, target=None ):
     for level in calculate( base, target ):
         p = level.twmatrix*p
         lattice.append(zip( map(list,level), p ))
-    return lattice 
-     
+    return lattice
