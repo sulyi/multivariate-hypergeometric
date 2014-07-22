@@ -25,7 +25,12 @@ class Drawing(list):
         super( Drawing, self ).__init__( iterable )
         self.gamma = gamma
         self.delta = delta
-        
+
+    def __eq__(self, other):
+      if isinstance( other, Drawing ):
+         return  super( Drawing, self ).__eq__( other ) and self.gamma == other.gamma and self.delta == other.delta
+      return False
+
     def __str__( self ):
         return '%s ~ (%d, %d)' % ( super( Drawing, self ).__repr__(),
                                    self.gamma,
@@ -47,7 +52,7 @@ class Pretty( list ):
     def __getslice__( self, i, j ):
         return Pretty(super( Pretty, self ).__getslice__( i, j ))
 
-    def __setslice__( self, i, j ):
+    def __setslice__( self, i, j, sequence ):
         return Pretty(super( Pretty, self ).__setslice__( i, j ))
  
     def __delslice__( self, i, j ):
