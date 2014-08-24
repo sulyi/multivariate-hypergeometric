@@ -13,6 +13,9 @@ Created on 2013.07.06.
 '''
 
 import scipy.sparse
+from math import factorial
+
+nCik = lambda n,k: factorial( n+k-1 ) / factorial( k ) / factorial( n-1 )
 
 class Drawing(list):
     
@@ -203,10 +206,12 @@ def produce_probabilities( base, target=None ):
         
     return lattice
 
-def ordered_sum_of_subsets( N ):
+def ordered_sum_of_subsets( iterable ):
     
     # TODO: doc, http://math.stackexchange.com/questions/89419/algorithm-wanted-enumerate-all-subsets-of-a-set-in-order-of-increasing-sums
     
+    N = list( iterable )
+    N.sort()
     S = [(0,0)]
     L = [[]]
     A = [ 0 for _i in range(len(N)) ]
@@ -215,8 +220,7 @@ def ordered_sum_of_subsets( N ):
     while any( a is not None for a in A):
         
         min_S = None
-        i_ast = None
-        
+         
         for i,a in enumerate(A):
             if a is not None:
                 curr_S = N[i]+S[a][1]
@@ -225,16 +229,18 @@ def ordered_sum_of_subsets( N ):
             if min_S > curr_S or min_S is None:
                 min_S = curr_S
                 i_ast = i
-                
+            elif  min_S == curr_S and S[a][0] < S[A[i_ast]][0]:
+                i_ast = i
+            
         L_new = list( L[A[i_ast]] )
-        L_new.append( N[i_ast] )
+        L_new.append(( i_ast, N[i_ast] ))
         L.append( L_new )
         S.append(( len(L_new), min_S ))
         
         i_next = None
         
         for i in range( A[i_ast]+1, len(S) ):
-            if all(N[i_ast] > l for l  in L[i]):
+            if all(N[i_ast] >= n and j < i_ast for j,n  in L[i]):
                 i_next = i
                 break
             
@@ -242,5 +248,17 @@ def ordered_sum_of_subsets( N ):
         
     return S
     
-    
+def pre_calculate_length_of_levels( iterable ):
+    m = len( iterable )
+    s = sum( iterable ) + 1
+    S = ordered_sum_of_subsets( iterable )
+    members = 0
+    l = []
+    for n in range(s):
+        while  n+1 > sum( S[members] ):
+            members += 1
+        l.append(sum(  (-1)**S[i][0]*nCik(m,n-sum(S[i])) for i in range(members) ))
+    return l
+     
+        
     
