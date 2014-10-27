@@ -17,7 +17,7 @@ from math import factorial
 
 nCik = lambda n,k: factorial( n+k-1 ) / factorial( k ) / factorial( n-1 )
 
-class Drawing(list):
+class Drawing( list ):
     
     ''''
     an event happened by drawing elements from an urn containing elements falling under different categories,
@@ -25,12 +25,15 @@ class Drawing(list):
     gamma and delta variables are aiding the enumeration of these events
     '''
     
-    def __init__( self, iterable, gamma=0, delta=0):
-        super( Drawing, self ).__init__( iterable )
-        self.gamma = gamma
-        self.delta = delta
+    def __init__( self, supremum, gamma=0, delta=0 ):
+        if hasattr( supremum, "__iter__" ):
+            super( Drawing, self ).__init__( supremum )
+            self.gamma = gamma
+            self.delta = delta
+        else:
+            raise ValueError( "supremum should have an __iter__ attribute" )
 
-    def __eq__(self, other):
+    def __eq__( self, other ):
         if isinstance( other, Drawing ):
             return  super( Drawing, self ).__eq__( other ) and self.gamma == other.gamma and self.delta == other.delta
         return False
@@ -53,24 +56,24 @@ class Pretty( list ):
     overriding output string formats
     '''
 
-    def __init__( self, iterable=[] ):
-        super( Pretty, self ).__init__( iterable )
+    def __init__( self, supremum=[] ):
+        super( Pretty, self ).__init__( supremum )
         
     def __getslice__( self, i, j ):
-        return Pretty(super( Pretty, self ).__getslice__( i, j ))
+        return Pretty( super( Pretty, self ).__getslice__(i,j) )
 
     def __setslice__( self, i, j, sequence ):
-        return Pretty(super( Pretty, self ).__setslice__( i, j ))
+        return Pretty( super( Pretty, self ).__setslice__(i,j) )
  
     def __delslice__( self, i, j ):
-        return Pretty(super( Pretty, self ).__delslice__( i, j ))
+        return Pretty( super( Pretty, self ).__delslice__(i,j) )
 
     def __str__( self, depth=1 ):
-        return '[ %s ]' %  (',\n '+' ' * depth).join( i.__str__(depth+2) if isinstance(i, Pretty) else str(i) for i in self )
+        return '[ %s ]' %  ( ',\n '+' ' * depth).join( i.__str__(depth+2) if isinstance(i, Pretty) else str(i) for i in self )
    
     def __repr__( self, depth=0 ):
-        depth+=len(self.__class__.__name__)+3
-        return '%s([ %s\n%s])' %  ( self.__class__.__name__, (',\n'+' '*depth).join( i.__repr__(depth) if isinstance(i, Pretty) else repr (i) for i in self ), ' '*(depth-1) )
+        depth+=len(self.__class__.__name__)+2
+        return '%s([ %s\n%s])' %  ( self.__class__.__name__, (',\n '+' '*depth).join( i.__repr__(depth) if isinstance(i, Pretty) else repr (i) for i in self ), ' '*(depth) )
 
 class Level( Pretty ):
     
@@ -84,24 +87,24 @@ class Level( Pretty ):
     tw stands for transition weight 
     '''
     
-    def __init__( self, iterable=[], twmatrix=None ):
+    def __init__( self, supremum=[], twmatrix=None ):
         # fractional data type would be be swell as far as numeric stability goes,
         # but again that would make numerator and denominator in products of matrices grow factorially
           
-        if not all( isinstance( e, Drawing ) for e in iterable ):
+        if not all( isinstance( e, Drawing ) for e in supremum ):
             raise ValueError( 'a Level may only contain Drawing' )
         
-        super( Level, self ).__init__( iterable )
+        super( Level, self ).__init__( supremum )
         
-        if iterable:
+        if supremum:
             if twmatrix is not None:
-                if twmatrix.shape[0] == len( iterable ):
+                if twmatrix.shape[0] == len( supremum ):
                     self.twmatrix = twmatrix
                 else:
-                    raise ValueError( 'number of Drawing (%d) does not equal to number of rows of twmatrix (%d)' % ( len(iterable), twmatrix.shape[0] ))
+                    raise ValueError( 'number of Drawing (%d) does not equal to number of rows of twmatrix (%d)' % ( len(supremum), twmatrix.shape[0] ))
             else:
-                # I don't think this has any sense unless len(iterable) = 1 
-                self.twmatrix = scipy.sparse.csc_matrix( scipy.ones(( 1, len(iterable) )) )
+                # I don't think this has any sense unless len(supremum) = 1 
+                self.twmatrix = scipy.sparse.csc_matrix( scipy.ones(( 1, len(supremum) )) )
         else:
             self.twmatrix = scipy.empty(( 0, 0 ))
             
@@ -116,22 +119,20 @@ class Level( Pretty ):
         
         if self:
             if denominator:
-                denominator = float(denominator)
+                denominator = float( denominator )
             else:
-                denominator = float(sum(self[0]))
+                denominator = float( sum(self[0]) )
                 
             following = Pretty() # list() when it's not debuged   
             drawptr = list( 0 for i in range(len(self[0])) )
 
-            data=list()
+            data = list()
             indices = list()
-            indptr = list()
+            indptr = [ 0 ]
             
             if target is None:
                 # cloning zeros
                 target = list(drawptr)
-            
-            indptr.append(len(indices))
             
             for d in self:
                 
@@ -152,7 +153,6 @@ class Level( Pretty ):
                         drawptr [i] = len(following)
                     
                     else:
-                        
 #                        debug =  len(following), drawptr[i] < len(following), drawptr[i] < len(following) and following[drawptr[i]].delta >= d.delta
                         if k > target[i]:
                             indices.append( drawptr[i] )
@@ -195,7 +195,7 @@ def calculate( base, target=None ):
 
 def produce_probabilities( base, target=None ):
     
-    # TODO: doc
+    # TODO: doc produce
     
     lattice = list()
     p = scipy.array([1.0])
@@ -210,8 +210,10 @@ def ordered_sum_of_subsets( iterable ):
     
     # TODO: doc, http://math.stackexchange.com/questions/89419/algorithm-wanted-enumerate-all-subsets-of-a-set-in-order-of-increasing-sums
     
+    # FIXME: lose ordering input
     N = list( iterable )
     N.sort()
+    
     S = [(0,0)]
     L = [[]]
     A = [ 0 for _i in range(len(N)) ]
@@ -237,18 +239,21 @@ def ordered_sum_of_subsets( iterable ):
         L.append( L_new )
         S.append(( len(L_new), min_S ))
         
-        i_next = None
+        A[i_ast]+=1
         
-        for i in range( A[i_ast]+1, len(S) ):
-            if all(N[i_ast] >= n and j < i_ast for j,n  in L[i]):
-                i_next = i
+        # FIXME: lover indexed elements must be lover in value, leading to need of ordering input
+        while not all(N[i_ast] >= n and j < i_ast for j,n  in L[A[i_ast]]):
+            A[i_ast]+=1
+            if A[i_ast] == len(S):
+                A[i_ast] = None
                 break
-            
-        A[i_ast] = i_next
-        
+
     return S
     
 def pre_calculate_length_of_levels( iterable ):
+    
+    #TODO: doc calculate length
+    
     m = len( iterable )
     s = sum( iterable ) + 1
     S = ordered_sum_of_subsets( iterable )
@@ -259,6 +264,3 @@ def pre_calculate_length_of_levels( iterable ):
             members += 1
         l.append(sum(  (-1)**S[i][0]*nCik(m,n-sum(S[i])) for i in range(members) ))
     return l
-     
-        
-    
