@@ -3,16 +3,20 @@
 
 #.dia/python/mvhgd_dia.py
 
-'''
+"""
 Created on 2013.11.03.
 
 @author: Ákos Sülyi
-'''
+"""
 
-import dia 
+# FIXME: broken, due to use of obsolete twmatrix
+# TODO: create support for twmatrix compatibility
 
-class CInputDialog :
-    def __init__(self, d, data) :
+import dia
+
+
+class CInputDialog:
+    def __init__(self, d, data):
         import pygtk
         pygtk.require("2.0")
         import gtk
@@ -35,8 +39,10 @@ class CInputDialog :
         box1.pack_start(box2)
         box2.show()
         
-        label1 = gtk.Label("Please specify the number of elements by each category\nseparated with comma and/or semicolon, space, line-breaks")
-        label1.set_alignment(0,0)
+        label1 = gtk.Label(
+            "Please specify the number of elements by each category\n"
+            "separated with comma and/or semicolon, space, line-breaks")
+        label1.set_alignment(0, 0)
         box2.pack_start(label1, False, False)
         label1.show()
         
@@ -75,12 +81,12 @@ class CInputDialog :
         
         win.show()
 
-    def on_draw(self, *args) :
+    def on_draw(self, *args):
         instr = self.text.get_text(*self.text.get_bounds())
         # processing input text
-        instr=instr.replace(" ", ",")
-        instr=instr.replace(";", ",")
-        instr=instr.replace("\n", ",")
+        instr = instr.replace(" ", ",")
+        instr = instr.replace(";", ",")
+        instr = instr.replace("\n", ",")
         
         array = list()
         errors = list()
@@ -91,39 +97,39 @@ class CInputDialog :
                     array.append(int(i))
             except ValueError as e:
                 errors.append(e.message)
-                
-                
+
         if not errors and array:
-            draw_lattice(self.data,array)
-            self.win.destroy ()
+            draw_lattice(self.data, array)
+            self.win.destroy()
         else:
-            self.error.set_markup( '\n\n'.join( ("Invalid value for a number",  '\n'.join(errors)) ) )
+            self.error.set_markup('\n\n'.join(("Invalid value for a number",  '\n'.join(errors))))
             if self.error.run() == self.e_response:
                 self.error.hide()
-                
 
-    def on_delete (self, *args) :
-        self.win.destroy ()
+    def on_delete(self, *args):
+        self.win.destroy()
 
-def mvhgd_cb(data,flags):
+
+def mvhgd_cb(data, flags):
     dlg = CInputDialog(dia.active_display().diagram, data)
+
 
 def draw_lattice(data, array):
     import mvhgd
-    if data :
+    if data:
         diagram = dia.active_display().diagram 
-    else :
+    else:
         diagram = dia.new("Hello_world.dia")
         data = diagram.data
     layer = data.active_layer
     
-    lattice = mvhgd.calculate(array)
+    lattice = mvhgd.Grid(array).generate()
     droot = next(lattice)[0]
     
     drawn = list()
     
-    root,h1,h2=dia.get_object_type("Flowchart - Ellipse").create(0,0)
-    root.properties["text"] = ','.join(map(str,droot))
+    root, h1, h2 = dia.get_object_type("Flowchart - Ellipse").create(0, 0)
+    root.properties["text"] = ','.join(map(str, droot))
     
     height = len(droot) * root.properties["elem_height"].value
     width = root.properties["elem_width"].value + 1
@@ -134,23 +140,23 @@ def draw_lattice(data, array):
     y = 0
     x = 0
         
-    for l,level in enumerate(lattice,1):
+    for l, level in enumerate(lattice, 1):
         y += height
-        x =  width * (len(level) - 1) / -2.0
+        x = width * (len(level) - 1) / -2.0
         
         tmp = list()
     
         for drawing in level:
-            o,oh1,oh2=dia.get_object_type("Flowchart - Ellipse").create(x,y)
-            o.properties["text"] = ','.join(map(str,drawing))
+            o, oh1, oh2 = dia.get_object_type("Flowchart - Ellipse").create(x, y)
+            o.properties["text"] = ','.join(map(str, drawing))
             tmp.append(o)
             layer.add_object(o)
             x += width
             
         drawn.append(tmp)
-        for r,i in enumerate(level.twmatrix.indptr[0:-1]):
+        for r, i in enumerate(level.twmatrix.indptr[0:-1]):
             for c in level.twmatrix.indices[i:level.twmatrix.indptr[r+1]]:
-                line,lh1,lh2=dia.get_object_type("Standard - Line").create(0,0)
+                line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
                 layer.add_object(line)
                 lh1.connect(drawn[l-1][r].connections[16])
                 lh2.connect(drawn[l][c].connections[16])
@@ -160,6 +166,6 @@ def draw_lattice(data, array):
     diagram.flush()
     return data
 
-dia.register_action ("mvhgd", "Haase diagram of a multivariate hypergeometric distribution", 
-             "/DisplayMenu/Dialogs/DialogsExtensionStart", 
-             mvhgd_cb)
+dia.register_action("mvhgd", "Haase diagram of a multivariate hypergeometric distribution",
+                    "/DisplayMenu/Dialogs/DialogsExtensionStart",
+                    mvhgd_cb)

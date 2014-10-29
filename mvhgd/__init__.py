@@ -1,20 +1,19 @@
 #/usr/bin/env python
 #-*- coding: UTF-8 -*-
 
+"""
+Created on 2014.08.19.    
+
+@author:  Ákos Sülyi
+"""
+# FIXME: doc package
+
 import tester
 import utils
 from core import *
 
-# FIXME: doc package
+__all__ = [ 'tester', 'utils' ]
 
-'''
-Created on 2014.08.19.    
+# TODO: review doc strings
+# TODO: packaging, setup.py
 
-@author:  Ákos Sülyi
-'''
-
-# TODO: review doc strings, check python guide lines
-# TODO: packaging
-# TODO: setup.py
-
-__all__ = [ "tester", "utils" ]
