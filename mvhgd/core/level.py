@@ -64,7 +64,7 @@ class Level( Pretty ):
                                 p += self[drawptr[j]].P * (c + 1)
                                 drawptr[j] += 1
                             else:
-                                drawptr[j] = i + self.parent.read_len_tab( n + sum(d[:j]), j + 1 )
+                                drawptr[j] = i + ( self.parent.read_len_tab( n + sum(d[:j]), j + 1 ) or 1 )
                                 p += self[drawptr[j]].P * (c + 1)
                                 drawptr[j] += 1
 

@@ -14,38 +14,38 @@ __all__ = [ 'nCk', 'nCik' ]
 
 def nCik( n, k ):
     """n choose k"""
-    return _f_nCik( n, k )
+    return _m_nCik( n, k )
 
 
 def nCk( n, k ):
     """n choose k with replacement"""
-    return _f_nCk( n, k )
+    return _m_nCk( n, k )
 
 #### the hood ####
 
 
 def _f_nCk( n, k ):
-    if k > n / 2:
-            k = n - k
     return factorial( n ) / factorial( k ) / factorial( n - k )
 
 
 def _f_nCik( n, k ):
-    if k > n - 1:
-        k = n - k
     return factorial( n + k - 1 ) / factorial( k ) / factorial( n - 1 )
 
 
 def _m_nCk( n, k ):
+    if k > n or k < 0 or n < 0:
+        raise ValueError( "Can't choose %d from %d" % ( k, n ) )
     if k > n / 2:
             k = n - k
     return reduce(lambda y, x: y * (n - k + x) / x, range(1, k + 1), 1)
 
 
 def _m_nCik( n, k ):
-    if k > n - 1:
-        k = n - k
-    return reduce(lambda y, i: y * (n - 1 + i) / i, range(1, k + 1), 1)
+    if n < 0:
+        raise ValueError( "Can't choose from negative (%d)" % n )
+    if k < 0:
+        raise ValueError( "Can't choose negative (%d)" % n )
+    return reduce(lambda y, x: y * (n - 1 + x) / x, range(1, k + 1), 1)
 
 
 if __name__ == '__main__':
