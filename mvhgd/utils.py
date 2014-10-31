@@ -23,6 +23,7 @@ def nCk( n, k ):
 
 #### the hood ####
 
+
 def _f_nCk( n, k ):
     if k > n / 2:
             k = n - k
@@ -38,13 +39,13 @@ def _f_nCik( n, k ):
 def _m_nCk( n, k ):
     if k > n / 2:
             k = n - k
-    return reduce(lambda y, i: y * (n-k+i) / i, range(1, k+1), 1)
+    return reduce(lambda y, x: y * (n - k + x) / x, range(1, k + 1), 1)
 
 
 def _m_nCik( n, k ):
     if k > n - 1:
         k = n - k
-    return reduce(lambda y, i: y * (n-1+i) / i, range(1, k+1), 1)
+    return reduce(lambda y, i: y * (n - 1 + i) / i, range(1, k + 1), 1)
 
 
 if __name__ == '__main__':
@@ -53,5 +54,5 @@ if __name__ == '__main__':
         if not f.startswith('_', 1) and f.startswith('_'):
             print f
             for i in range(10, 50, 10):
-                print (i, i/2), ':', timeit("mvhgd.utils.%s(%d,%d)" %(f, i,i/2),"import mvhgd.utils", number=100000),
+                print (i, i/2), ':', timeit("mvhgd.utils.%s(%d,%d)" % (f, i, i/2), "import mvhgd.utils", number=100000),
             print

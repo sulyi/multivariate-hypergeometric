@@ -8,7 +8,7 @@ class Grid ( object ):
     """
     # FIXME: doc Grid
     
-    __slots__ = [ 'root', 'm', 'roof', 'len_tab', '_iroot', '__weekref__' ]
+    __slots__ = [ 'root', 'm', 'roof', 'len_tab', '_iroot' ]
 
     def __init__( self, supremum=[] ):
         self.root = Case( supremum )
@@ -25,7 +25,7 @@ class Grid ( object ):
 
     def generate( self, target=None ):
         floor = 0 if target is None else sum( target )
-        target =  target or [ 0 ] * self.m
+        target = target or [ 0 ] * self.m
         
         previous = Level( self, [ self.root ] )
         yield previous
@@ -36,4 +36,4 @@ class Grid ( object ):
 
     def read_len_tab( self, n, i ):
         n_ast = n - self._iroot[i]
-        return self.len_tab[i][n_ast] if n_ast > 0 else 0
+        return self.len_tab[i][n_ast] if n_ast >= 0 else 0

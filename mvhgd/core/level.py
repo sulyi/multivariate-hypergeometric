@@ -40,7 +40,7 @@ class Level( Pretty ):
         denominator = denominator or sum( self[0] )
         target = target or [ 0 ] * self.parent.m
         
-        n = self.parent.roof-denominator
+        n = self.parent.roof - denominator
         
         flush = [ None ] * self.parent.m 
         drawptr = [ self.parent.read_len_tab( n, i ) for i in range( 1, self.parent.m ) ]
@@ -48,11 +48,11 @@ class Level( Pretty ):
         
         following = Level( self.parent, [] )
         
-        for i,d in enumerate( self ):
+        for i, d in enumerate( self ):
             num_of_0s = d.gamma - d.delta
             
             for k in range( d.gamma, self.parent.m ):
-                flush[k-num_of_0s] = len( following )
+                flush[ k - num_of_0s ] = len( following )
                 
                 if d[k] > target[k]:
                     p = self[i].P * d[k]
@@ -61,12 +61,11 @@ class Level( Pretty ):
                     for j, c in enumerate( d ):
                         if j != k and c < self.parent.root[j]:
                             if drawptr[j] > i:
-                                p += self[drawptr[j]].P * (c+1)
+                                p += self[drawptr[j]].P * (c + 1)
                                 drawptr[j] += 1
                             else:
-                                x = self.parent.read_len_tab( n + sum(d[:j]), j + 1 )
-                                drawptr[j] = i + ( x if x else 1 )
-                                p += self[drawptr[j]].P * (c+1)
+                                drawptr[j] = i + self.parent.read_len_tab( n + sum(d[:j]), j + 1 )
+                                p += self[drawptr[j]].P * (c + 1)
                                 drawptr[j] += 1
 
                     child = Case( d, k, k - num_of_0s, p / denominator )
@@ -76,7 +75,7 @@ class Level( Pretty ):
                 else:
                     num_of_0s += 1
                 
-        for i,f in enumerate( flush ):
+        for i, f in enumerate( flush ):
             if f is not None:
                 self.parent.len_tab[i].append( len( following ) - f )
         

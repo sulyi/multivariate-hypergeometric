@@ -17,9 +17,9 @@ def generate_input_data( seed, concat=1 ):
     if not hasattr( concat, '__iter__' ):
         concat = [ concat ]
         
-    for i,c in enumerate( concat, 1 ):
-        for d in range(1,c+1):
-            yield map(lambda x: x * d,  seed) * i
+    for i, c in enumerate( concat, 1 ):
+        for d in range(1, c + 1):
+            yield map(lambda x: x * d, seed) * i
 
 
 def _combinatorial_generate( root, target=None ):
@@ -40,8 +40,8 @@ def _combinatorial_generate( root, target=None ):
                 if d[k] > target[k]:
                     tmp_d = list( d )
                     tmp_d[k] -= 1
-                    P = reduce(lambda x,y: x*y, map( nCk, root, tmp_d ), 1.0 / nCk( roof, n) )
-                    child = core.Case( tmp_d, k, P=P ) 
+                    p = reduce(lambda x, y: x * y, map( nCk, root, tmp_d ), 1.0 / nCk( roof, n) )
+                    child = core.Case( tmp_d, k, P=p )
                     
                     following.append( child )
         previous = following
@@ -71,7 +71,7 @@ def compare_test(data):
         for j in range(len(L)):
             max_delta = max( max_delta, abs( L[j].P - cL[j].P ) )
                 
-    return st,sct,max_delta
+    return st, sct, max_delta
 
 
 def cputime_test(data):

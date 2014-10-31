@@ -11,7 +11,7 @@ class Case(bytearray):
             try:
                 super(Case, self).__init__(map(int, iterable))
             except TypeError:
-                raise ( TypeError, "itreable must support iteration" )
+                raise ( TypeError, "iterable must support iteration" )
             except ValueError:
                 raise ( ValueError, "each item in iterable must be an integer in range(0, 256)" )
         else:
