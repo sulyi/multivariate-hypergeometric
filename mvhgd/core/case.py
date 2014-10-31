@@ -6,7 +6,7 @@ class Case(bytearray):
 
     __slots__ = ['gamma', 'delta', 'P']
 
-    def __init__(self, iterable=None, gamma=0, delta=0, P=1.0):
+    def __init__(self, iterable=None, gamma=0, P=1.0):
         if iterable is not None:
             try:
                 super(Case, self).__init__(map(int, iterable))
@@ -17,7 +17,6 @@ class Case(bytearray):
         else:
             super(Case, self).__init__()
         self.gamma = gamma
-        self.delta = delta
         # fractional data type for P would be be swell as far as numeric stability goes,
         # but again that would make values grow factorially in size
         self.P = P
@@ -25,18 +24,16 @@ class Case(bytearray):
     def __eq__(self, other):
         if not isinstance(other, Case):
             return False
-        return super(Case, self).__eq__(other) and self.gamma == other.gamma and self.delta == other.delta
+        return super(Case, self).__eq__(other) and self.gamma == other.gamma
 
     def __str__(self):
-        return '%s ~ (%d, %s) - %r' % ( list(self),
-                                        self.gamma,
-                                        self.delta,
-                                        self.P
-                                        )
+        return '%s ~ (%d) - %r' % ( list(self),
+                                    self.gamma,
+                                    self.P
+                                    )
 
     def __repr__(self):
-        return 'Case( %s, %r, %r, %r )' % ( list(self),
-                                            self.gamma,
-                                            self.delta,
-                                            self.P
-                                            )
+        return 'Case( %s, %r, %r )' % ( list(self),
+                                        self.gamma,
+                                        self.P
+                                        )

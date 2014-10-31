@@ -49,7 +49,7 @@ class Level( Pretty ):
         following = Level( self.parent, [] )
         
         for i, d in enumerate( self ):
-            num_of_0s = d.gamma - d.delta
+            num_of_0s = d.gamma - reduce( lambda s, x: s + 1 if x else s, d[:d.gamma], 0 )
             
             for k in range( d.gamma, self.parent.m ):
                 flush[ k - num_of_0s ] = len( following )
@@ -68,7 +68,7 @@ class Level( Pretty ):
                                 p += self[drawptr[j]].P * (c + 1)
                                 drawptr[j] += 1
 
-                    child = Case( d, k, k - num_of_0s, p / denominator )
+                    child = Case( d, k, p / denominator )
                     child[k] -= 1
                     following.append( child )
                     
