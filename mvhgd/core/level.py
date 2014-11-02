@@ -1,5 +1,5 @@
-from pretty import Pretty
-from case import Case
+from .pretty import Pretty
+from .case import Case
 
 
 class Level( Pretty ):

@@ -9,7 +9,7 @@ Created on 2014.10.15.
 
 import time
 import core
-from utils import nCk
+from .utils import nCk
 
 
 def generate_input_data( seed, concat=1 ):
@@ -53,29 +53,56 @@ def compare_test(data):
     G  = core.Grid(data)
     g  = G.generate()
     cg = _combinatorial_generate(data)
-    
+
     sct = 0.0
     st  = 0.0
     max_delta = 0.0
-    
+
     for _i in range(G.roof):
 
         start = time.clock()
         L = g.next()
         st += time.clock() - start
-         
+
         start = time.clock()
         cL = cg.next()
         sct += time.clock() - start
-        
+
         for j in range(len(L)):
             max_delta = max( max_delta, abs( L[j].P - cL[j].P ) )
-                
+
     return st, sct, max_delta
 
 
 def cputime_test(data):
-    start = time.clock()
-    for _l in core.Grid(data).generate():
-        pass
-    return time.clock() - start
+    n = 1
+    while True:
+        full = 0.0
+        for _i in range(n):
+            start = time.clock()
+            for _l in core.Grid(data).generate():
+                pass
+            full += time.clock() - start
+        full /= n
+        if full:
+            break
+        else:
+            n *= 10
+    return full
+
+
+def ccputime_test(data):
+    n = 1
+    while True:
+        full = 0.0
+        for _i in range(n):
+            start = time.clock()
+            for _l in _combinatorial_generate(data):
+                pass
+            full += time.clock() - start
+        full /= n
+        if full:
+            break
+        else:
+            n *= 10
+    return full

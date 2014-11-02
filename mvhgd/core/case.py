@@ -1,4 +1,6 @@
-class Case(bytearray):
+
+class Case ( bytearray ):
+
     """
     an event happened by drawing elements from an urn containing elements falling under different categories,
     the number of drawn elements in each category is given by an iterable

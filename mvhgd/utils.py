@@ -14,12 +14,12 @@ __all__ = [ 'nCk', 'nCik' ]
 
 def nCik( n, k ):
     """n choose k"""
-    return _m_nCik( n, k )
+    return _f_nCik( n, k )
 
 
 def nCk( n, k ):
     """n choose k with replacement"""
-    return _m_nCk( n, k )
+    return _f_nCk( n, k )
 
 #### the hood ####
 

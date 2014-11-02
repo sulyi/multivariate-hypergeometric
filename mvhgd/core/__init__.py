@@ -2,7 +2,7 @@
 
 """
 """
-# FIXME: core doc
+# FIXME: doc, core
 
 from pretty import *
 from case import *

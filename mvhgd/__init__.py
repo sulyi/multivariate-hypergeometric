@@ -6,7 +6,7 @@ Created on 2014.08.19.
 
 @author:  Ákos Sülyi
 """
-# FIXME: doc package
+# FIXME: doc, package
 
 import tester
 import utils
@@ -16,4 +16,3 @@ __all__ = [ 'tester', 'utils' ]
 
 # TODO: review doc strings
 # TODO: packaging, setup.py
-
