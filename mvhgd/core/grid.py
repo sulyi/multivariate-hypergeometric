@@ -7,7 +7,7 @@ class Grid ( object ):
 
     """
     """
-    # FIXME: doc, Grid
+    # TODO: doc, Grid
     
     __slots__ = [ 'root', 'm', 'roof', 'len_tab', '_iroot', '_psos' ]
 

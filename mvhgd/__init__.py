@@ -6,7 +6,7 @@ Created on 2014.08.19.
 
 @author:  Ákos Sülyi
 """
-# FIXME: doc, package
+# TODO: doc, package
 
 import tester
 import utils
