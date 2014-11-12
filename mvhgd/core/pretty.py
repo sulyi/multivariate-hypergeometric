@@ -2,7 +2,7 @@
 class Pretty( list ):
      
     """
-    overriding output string formats
+    overrides output string formats
     """
  
     def __init__( self, iterable=[] ):

@@ -102,7 +102,7 @@ class CInputDialog:
             draw_lattice(self.data, array)
             self.win.destroy()
         else:
-            self.error.set_markup('\n\n'.join(("Invalid value for a number",  '\n'.join(errors))))
+            self.error.set_markup('\n\n'.join(("Invalid value for a number", '\n'.join(errors))))
             if self.error.run() == self.e_response:
                 self.error.hide()
 
@@ -123,7 +123,7 @@ def draw_lattice(data, array):
         data = diagram.data
     layer = data.active_layer
     
-    lattice = mvhgd.Grid(array).generate()
+    lattice = mvhgd.Grid(array)
     droot = next(lattice)[0]
     
     drawn = list()
@@ -135,32 +135,36 @@ def draw_lattice(data, array):
     width = root.properties["elem_width"].value + 1
     layer.add_object(root)
     
-    drawn.append([root])
+    prev = [root]
     
     y = 0
     x = 0
         
-    for l, level in enumerate(lattice, 1):
+    for n, level in enumerate(lattice):
         y += height
         x = width * (len(level) - 1) / -2.0
         
-        tmp = list()
+        following = list()
+        drawptr = [ level.parent._read_len_tab( n, i ) for i in range( 1, level.parent.m ) ]
+        drawptr.append( 0 )
     
         for drawing in level:
             o, oh1, oh2 = dia.get_object_type("Flowchart - Ellipse").create(x, y)
             o.properties["text"] = ','.join(map(str, drawing))
-            tmp.append(o)
+            following.append(o)
             layer.add_object(o)
             x += width
+            for k in range(level.parent.m):
+                if drawing[k] < droot[k]:
+                    line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
+                    layer.add_object(line)
+                    lh1.connect(prev[drawptr[k]].connections[16])
+                    lh2.connect(o.connections[16])
+                    diagram.update_connections(prev[drawptr[k]])
+                    print '\t', drawptr[k]
+                    drawptr[k] += 1
             
-        drawn.append(tmp)
-        for r, i in enumerate(level.twmatrix.indptr[0:-1]):
-            for c in level.twmatrix.indices[i:level.twmatrix.indptr[r+1]]:
-                line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
-                layer.add_object(line)
-                lh1.connect(drawn[l-1][r].connections[16])
-                lh2.connect(drawn[l][c].connections[16])
-                diagram.update_connections(drawn[l-1][r])
+        prev = following
 
     dia.active_display().add_update_all()
     diagram.flush()
