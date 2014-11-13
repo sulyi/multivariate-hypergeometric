@@ -75,33 +75,28 @@ def compare_test(data):
 
 def cputime_test(data):
     n = 1
-    while True:
-        full = 0.0
+    full = 0.0
+    while not full:
         for _i in range(n):
             start = time.clock()
             for _ in core.Grid(data):
                 pass
             full += time.clock() - start
         full /= n
-        if full:
-            break
-        else:
-            n *= 10
+        print n
+        n *= 10
     return full
 
 
 def c_cputime_test(data):
     n = 1
-    while True:
-        full = 0.0
+    full = 0.0
+    while not full:
         for _i in range(n):
             start = time.clock()
             for _ in _combinatorial_generate(data):
                 pass
             full += time.clock() - start
         full /= n
-        if full:
-            break
-        else:
-            n *= 10
+        n *= 10
     return full
