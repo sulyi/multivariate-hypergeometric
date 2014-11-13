@@ -53,16 +53,20 @@ class Level( Pretty ):
             
             for k in range( d.gamma, self.parent.m ):
                 flush[ k - num_of_0s ] = len( following )
-                
+
+                # enumerating descendants
                 if d[k] > target[k]:
                     p = d.P * d[k]
                     drawptr[k] += 1
 
+                    # finding other ascendants
                     for j, c in enumerate( d ):
                         if j != k and c < self.parent.root[j]:
+                            # stepping
                             if drawptr[j] > i:
                                 p += self[drawptr[j]].P * (c + 1)
                                 drawptr[j] += 1
+                            # skipping
                             else:
                                 drawptr[j] = i + ( self.parent._read_len_tab( n + sum(d[:j]), j + 1 ) or 1 )
                                 p += self[drawptr[j]].P * (c + 1)

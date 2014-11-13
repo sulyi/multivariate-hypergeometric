@@ -36,10 +36,26 @@ class Grid ( object ):
         return next( self._default )
 
     def limit_to( self, target=None ):
-        # TODO: support limitation by depth
-        # TODO: target validation
-        floor = 0 if target is None else sum( target )
-        target = target or [ 0 ] * self.m
+
+        """
+        """
+        # TODO: doc, limit_to
+
+        if target is not None:
+            try:
+                target = Draw(target)
+                if len(target) != self.m:
+                    raise( ValueError, "argument has different number of categories (%d) than Grid (%d)" %
+                           (len(target), self.m) )
+                floor = sum( target )
+            except TypeError:
+                floor = int(target)
+                if not 0 < floor < self.roof:
+                    raise( ValueError, "argument should be between Grid.roof (%d) and 0" % self.roof )
+                target = None
+        else:
+            floor = 0
+            target = [ 0 ] * self.m
 
         previous = Level( self, [ self.root ] )
         yield previous
@@ -49,5 +65,6 @@ class Grid ( object ):
             yield previous
 
     def _read_len_tab( self, n, i ):
+        # unsafe, since _len_tab is filled during generation
         n_ast = n - self._iroot[i]
         return self._len_tab[i][n_ast] if n_ast >= 0 else 0

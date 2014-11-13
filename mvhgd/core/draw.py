@@ -13,9 +13,9 @@ class Draw ( bytearray ):
             try:
                 super(Draw, self).__init__(map(int, iterable))
             except TypeError:
-                raise ( TypeError, "iterable must support iteration" )
+                raise ( TypeError, "argument must support iteration" )
             except ValueError:
-                raise ( ValueError, "each item in iterable must be an integer in range(0, 256)" )
+                raise ( ValueError, "each item in argument must be an integer in range(0, 256)" )
         else:
             super(Draw, self).__init__()
         self.gamma = gamma
