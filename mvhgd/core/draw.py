@@ -35,7 +35,7 @@ class Draw ( bytearray ):
                                     )
 
     def __repr__(self):
-        return 'Drawing( %s, %r, %r )' % ( list(self),
+        return 'Draw( %s, %r, %r )' % ( list(self),
                                         self.gamma,
                                         self.P
                                         )

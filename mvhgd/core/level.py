@@ -27,7 +27,7 @@ class Level( Pretty ):
     @property
     def P( self ):
         return ( d.P for d in self )
-    
+
     def next_level( self, denominator=None, target=None ):
         
         """

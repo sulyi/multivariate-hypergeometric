@@ -19,7 +19,7 @@ def generate_input_data( seed, concatenation=1 ):
         
     for i, c in enumerate( concatenation, 1 ):
         for d in range(1, c + 1):
-            yield map(lambda x: x * d, seed) * i
+            yield [ x * d for x in seed ] * i
 
 
 def _combinatorial_generate( root, target=None ):

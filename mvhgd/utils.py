@@ -11,6 +11,7 @@ __all__ = [ 'nCk', 'nCik', 'Dosage' ]
 
 
 class Dosage( object ):
+
     """
     """
     # TODO: doc, Dosage
@@ -83,6 +84,7 @@ def nCk( n, k ):
 def nCik( n, k ):
     """n choose k with replacement"""
     return _m_nCk( n + k - 1, k )
+
 
 #### the hood ####
 
