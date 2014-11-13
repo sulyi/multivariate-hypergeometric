@@ -52,7 +52,7 @@ class Grid ( object ):
                 floor = int(target)
                 if not 0 < floor < self.roof:
                     raise( ValueError, "argument should be between Grid.roof (%d) and 0" % self.roof )
-                target = None
+                target = [ 0 ] * self.m
         else:
             floor = 0
             target = [ 0 ] * self.m
