@@ -83,9 +83,8 @@ def cputime_test(data):
                 pass
             full += time.clock() - start
         full /= n
-        print n
         n *= 10
-    return full
+    return full,n
 
 
 def c_cputime_test(data):
@@ -99,4 +98,4 @@ def c_cputime_test(data):
             full += time.clock() - start
         full /= n
         n *= 10
-    return full
+    return full,n
