@@ -13,15 +13,35 @@ class Draw ( bytearray ):
             try:
                 super(Draw, self).__init__(map(int, iterable))
             except TypeError:
-                raise ( TypeError, "argument must support iteration" )
+                raise TypeError( "argument must support iteration" )
             except ValueError:
-                raise ( ValueError, "each item in argument must be an integer in range(0, 256)" )
+                raise ValueError( "each item in argument must be an integer in range(0, 256)" )
         else:
             super(Draw, self).__init__()
         self.gamma = gamma
         # fractional data type for P would be be swell as far as numeric stability goes,
         # but again that would make values grow factorially in size
         self.P = P
+
+    def __gt__( self, other):
+        if len(self) != len(other):
+            return False
+        return all( o < d for o, d in zip(other, self) )
+
+    def __lt__( self, other):
+        if len(self) != len(other):
+            return False
+        return all( o > d for o, d in zip(other, self) )
+
+    def __ge__( self, other):
+        if len(self) != len(other):
+            return False
+        return all( o <= d for o, d in zip(other, self) )
+
+    def __le__( self, other):
+        if len(self) != len(other):
+            return False
+        return all( o >= d for o, d in zip(other, self) )
 
     def __eq__(self, other):
         if not isinstance(other, Draw):
