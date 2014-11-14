@@ -54,7 +54,7 @@ class Dosage( object ):
 
             a[i_ast] += 1
 
-            # FIXME: lover indexed elements must be lover in value, leading to need of ordering input
+            # FIXME: lower indexed elements must be lower in value, leading to need of ordering input
             while not all(n[i_ast] >= item and j < i_ast for j, item in l[a[i_ast]]):
                 a[i_ast] += 1
                 if a[i_ast] == len(s):
