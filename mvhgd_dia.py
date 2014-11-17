@@ -12,7 +12,6 @@ Created on 2013.11.03.
 # TODO: color toggle checkbox
 
 import dia
-from math import floor
 
 
 class CInputDialog:
@@ -127,8 +126,6 @@ def draw_lattice(data, array):
     lattice = mvhgd.Grid(array)
     droot = next(lattice)[0]
     
-    drawn = list()
-    
     root, h1, h2 = dia.get_object_type("Flowchart - Ellipse").create(0, 0)
     root.properties["text"] = ','.join(map(str, droot))
     
@@ -173,10 +170,9 @@ def draw_lattice(data, array):
 
 
 def h2rgb(h):
-    h = int(h)
-    h60f = h / 60
     h60 = h / 60.0
-    hi = int(h60f) % 6
+    h60f = int(h) / 60
+    hi = h60f % 6
     f = h60 - h60f
 
     q = 0.9 * (1 - f * 0.9)
