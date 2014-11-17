@@ -49,8 +49,8 @@ class Level( Pretty ):
         following = Level( self.parent, [] )
         
         for i, d in enumerate( self ):
-            num_of_0s = d.gamma - reduce( lambda s, x: s + 1 if x else s, d[:d.gamma], 0 )
-            
+            num_of_0s = d.gamma - sum( x > 0 for x in d[:d.gamma] )
+
             for k in range( d.gamma, self.parent.m ):
                 flush[ k - num_of_0s ] = len( following )
 
@@ -79,6 +79,7 @@ class Level( Pretty ):
                 else:
                     num_of_0s += 1
                 
+        # storing length of shifted level of each fixed prefix sublattice
         for i, f in enumerate( flush ):
             if f is not None:
                 self.parent._len_tab[i].append( len( following ) - f )

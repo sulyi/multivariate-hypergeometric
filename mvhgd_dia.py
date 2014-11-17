@@ -9,10 +9,10 @@ Created on 2013.11.03.
 @author: Ákos Sülyi
 """
 
-# FIXME: broken, due to use of obsolete twmatrix
-# TODO: create support for twmatrix compatibility
+# TODO: color toggle checkbox
 
 import dia
+from math import floor
 
 
 class CInputDialog:
@@ -116,6 +116,7 @@ def mvhgd_cb(data, flags):
 
 def draw_lattice(data, array):
     import mvhgd
+    # FIXME: review diagram creation
     if data:
         diagram = dia.active_display().diagram 
     else:
@@ -145,7 +146,7 @@ def draw_lattice(data, array):
         x = width * (len(level) - 1) / -2.0
         
         following = list()
-        drawptr = [ level.parent._read_len_tab( n, i ) for i in range( 1, level.parent.m ) ]
+        drawptr = [ lattice._read_len_tab( n, i ) for i in range( 1, lattice.m ) ]
         drawptr.append( 0 )
     
         for drawing in level:
@@ -154,14 +155,14 @@ def draw_lattice(data, array):
             following.append(o)
             layer.add_object(o)
             x += width
-            for k in range(level.parent.m):
+            for k in range(lattice.m):
                 if drawing[k] < droot[k]:
                     line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
+                    line.properties["line_colour"] = h2rgb(360.0 / lattice.m * k)
                     layer.add_object(line)
                     lh1.connect(prev[drawptr[k]].connections[16])
                     lh2.connect(o.connections[16])
                     diagram.update_connections(prev[drawptr[k]])
-                    print '\t', drawptr[k]
                     drawptr[k] += 1
             
         prev = following
@@ -169,6 +170,32 @@ def draw_lattice(data, array):
     dia.active_display().add_update_all()
     diagram.flush()
     return data
+
+
+def h2rgb(h):
+    h = int(h)
+    h60f = h / 60
+    h60 = h / 60.0
+    hi = int(h60f) % 6
+    f = h60 - h60f
+
+    q = 0.9 * (1 - f * 0.9)
+    t = 0.9 * (1 - (1 - f) * 0.9)
+
+    if hi == 0:
+        r, g, b = 0.9, t, 0.09
+    elif hi == 1:
+        r, g, b = q, 0.9, 0.09
+    elif hi == 2:
+        r, g, b = 0.09, 0.9, t
+    elif hi == 3:
+        r, g, b = 0.09, q, 0.9
+    elif hi == 4:
+        r, g, b = t, 0.09, 0.9
+    elif hi == 5:
+        r, g, b = 0.9, 0.09, q
+
+    return r, g, b
 
 dia.register_action("mvhgd", "Haase diagram of a multivariate hypergeometric distribution",
                     "/DisplayMenu/Dialogs/DialogsExtensionStart",

@@ -12,7 +12,5 @@ import tester
 import utils
 from core import *
 
-__all__ = [ 'tester', 'utils' ]
-
 # TODO: review doc strings
 # TODO: packaging, setup.py
