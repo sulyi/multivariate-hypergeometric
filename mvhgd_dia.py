@@ -133,12 +133,12 @@ def draw_lattice(data, array):
     width = root.properties["elem_width"].value + 1
     layer.add_object(root)
     
-    prev = [root]
+    prev = [(root,0)]
     
     y = 0
     x = 0
         
-    for n, level in enumerate(lattice):
+    for n, level in enumerate(lattice,1):
         y += height
         x = width * (len(level) - 1) / -2.0
         
@@ -146,10 +146,12 @@ def draw_lattice(data, array):
         drawptr = [ lattice._read_len_tab( n, i ) for i in range( 1, lattice.m ) ]
         drawptr.append( 0 )
     
-        for drawing in level:
+        for i,drawing in enumerate(level):
+            print i
+            delta = sum(x > 0 for x in drawing)
             o, oh1, oh2 = dia.get_object_type("Flowchart - Ellipse").create(x, y)
             o.properties["text"] = ','.join(map(str, drawing))
-            following.append(o)
+            following.append((o, delta))
             layer.add_object(o)
             x += width
             for k in range(lattice.m):
@@ -157,11 +159,14 @@ def draw_lattice(data, array):
                     line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
                     line.properties["line_colour"] = h2rgb(360.0 / lattice.m * k)
                     layer.add_object(line)
-                    lh1.connect(prev[drawptr[k]].connections[16])
+                    lh1.connect(prev[drawptr[k]][0].connections[16])
                     lh2.connect(o.connections[16])
-                    diagram.update_connections(prev[drawptr[k]])
+                    diagram.update_connections(prev[drawptr[k]][0])
                     drawptr[k] += 1
-            
+                elif drawptr[k] < len(prev) and delta < prev[drawptr[k]][1]:
+                    print n,k
+                    drawptr[k] = drawptr[k-1]-1
+
         prev = following
 
     dia.active_display().add_update_all()
