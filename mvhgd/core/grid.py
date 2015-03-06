@@ -16,7 +16,7 @@ class Grid ( object ):
         self.roof = sum( self.root )
         self._len_tab = [ [1] for _ in range(self.m) ]
         self._iroot = [ sum(self.root[:i]) for i in range(self.m) ]
-        self._default = self.limit_to()
+        self._default = self.limit_traversal_to()
 
     def __repr__( self ):
         return "Grid(%r)" % self.root
@@ -35,34 +35,32 @@ class Grid ( object ):
     def next(self):
         return next( self._default )
 
-    def limit_to( self, target=None ):
+    def limit_traversal_to( self, target=None ):
 
         """
         """
         # TODO: doc, limit_to
 
         if target is not None:
-            try:
-                if len(target) == 1:
-                    raise TypeError
-                elif len(target) != self.m:
-                    raise ValueError( "argument has different number of categories (%d) than Grid (%d)" %
-                                      (len(target), self.m) )
+            if len(target) == 1:
+                floor = self.roof - int(target)
+                target = Draw([0] * self.m)
+                if not 0 <= floor <= self.roof:
+                    raise ValueError( "argument should be between Grid.roof (%d) and 0" % self.roof )
+            elif len(target) == self.m:
+                floor = sum(target)
                 target = Draw(target)
                 if not Draw([0] * self.m) <= target <= self.root:
                     raise ValueError( "argument should be between %s and %s" % ([0] * self.m, list(self.root)) )
-                floor = sum(target)
-            except TypeError:
-                floor = self.roof - int(target)
-                if not 0 < floor < self.roof:
-                    raise ValueError( "argument should be between Grid.roof (%d) and 0" % self.roof )
-                target = [0] * self.m
+            else:
+                raise ValueError( "argument has different number of categories (%d) than Grid (%d)" %
+                                  (len(target), self.m) )
         else:
             floor = 0
-            target = [0] * self.m
+            target = Draw([0] * self.m)
+
         previous = Level( self, [ self.root ] )
         yield previous
-
         for n in range( self.roof, floor, -1 ):
             previous = previous.next_level( n, target )
             yield previous

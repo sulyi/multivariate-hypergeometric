@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
 """
 a collection of combinatorial functions
@@ -11,13 +11,16 @@ __all__ = [ 'nCk', 'nCik', 'Dosage' ]
 
 
 class Dosage( object ):
+# FIXME: this needs a better name
 
     """
     """
     # TODO: doc, Dosage
 
     def __init__( self, grid ):
+        # FIXME: this also needs a better name
         self.patient = grid
+        # FIXME: this does not seem ok!
         self._psobs = self._power_set_ordered_by_sums
 
     @property
@@ -66,7 +69,7 @@ class Dosage( object ):
 
         """
         """
-        #TODO: doc, calculate length
+        # TODO: doc, calculate length
 
         members = 0
         collect = 0

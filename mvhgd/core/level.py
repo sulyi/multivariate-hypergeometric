@@ -16,7 +16,7 @@ class Level( Pretty ):
         from grid import Grid
         
         if not isinstance( parent, Grid ):
-            raise TypeError( "parent of Level should be Grid type it's %s instead" % type(Grid) )
+            raise TypeError( "parent of Level should be Grid type it's %s instead" % type(parent) )
           
         if not all( isinstance( d, Draw ) for d in iterable ):
             raise TypeError( "a Level may only contain Draw" )

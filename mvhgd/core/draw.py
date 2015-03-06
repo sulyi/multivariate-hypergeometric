@@ -1,4 +1,3 @@
-
 class Draw ( bytearray ):
 
     """
