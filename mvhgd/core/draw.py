@@ -1,4 +1,4 @@
-class Draw ( bytearray ):
+class Draw ( list ):
 
     """
     an event happened by drawing elements from an urn containing elements falling under different categories,
@@ -10,11 +10,9 @@ class Draw ( bytearray ):
     def __init__(self, iterable=None, gamma=0, P=1.0):
         if iterable is not None:
             try:
-                super(Draw, self).__init__(map(int, iterable))
+                super(Draw, self).__init__(int(i) for i in iterable)
             except TypeError:
                 raise TypeError( "argument must support iteration" )
-            except ValueError:
-                raise ValueError( "each item in argument must be an integer in range(0, 256)" )
         else:
             super(Draw, self).__init__()
         self.gamma = gamma

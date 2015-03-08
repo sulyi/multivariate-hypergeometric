@@ -12,7 +12,7 @@ class Level( Pretty ):
     
     __slots__ = [ 'parent' ]
     
-    def __init__( self, parent, iterable=[] ):
+    def __init__( self, algorithm, parent, iterable=[] ):
         from grid import Grid
         
         if not isinstance( parent, Grid ):
@@ -21,14 +21,13 @@ class Level( Pretty ):
         if not all( isinstance( d, Draw ) for d in iterable ):
             raise TypeError( "a Level may only contain Draw" )
          
-        self.parent = parent
-        super( Level, self ).__init__( iterable )
+        self.algorithm = algorithm(parent, iterable)
             
     @property
     def P( self ):
-        return ( d.P for d in self )
+        return ( d.P for d in self.algorithm )
 
-    def next_level( self, denominator=None, target=None ):
+    def next_level( self, n=None, target=None ):
         
         """
         enumerates the next Level,
@@ -37,50 +36,11 @@ class Level( Pretty ):
         denominator can be given which equals to the number of the Levels already enumerated
         """
 
-        denominator = denominator or sum( self[0] )
-        target = target or [ 0 ] * self.parent.m
-        
-        n = self.parent.roof - denominator
-        
-        flush = [ None ] * self.parent.m 
-        drawptr = [ self.parent._read_len_tab( n, i ) for i in range( 1, self.parent.m ) ]
-        drawptr.append( 0 )
-        
-        following = Level( self.parent, [] )
-        
-        for i, d in enumerate( self ):
-            num_of_0s = d.gamma - sum( x > 0 for x in d[:d.gamma] )
+        n = n or self.algorithm.parent.roof - sum( self.algorithm[0] )
+        target = target or [ 0 ] * self.algorithm.parent.m
 
-            for k in range( d.gamma, self.parent.m ):
-                flush[ k - num_of_0s ] = len( following )
+        following = self.algorithm.next_level(n, target)
 
-                # enumerating descendants
-                if d[k] > target[k]:
-                    p = d.P * d[k]
-                    drawptr[k] += 1
-
-                    # finding other ascendants
-                    for j, c in enumerate( d ):
-                        if j != k and c < self.parent.root[j]:
-                            # skipping
-                            if drawptr[j] <= i:
-                                drawptr[j] = i + ( self.parent._read_len_tab( n + sum(d[:j]), j + 1 ) or 1 )
-                            # stepping
-                            p += self[drawptr[j]].P * (c + 1)
-                            drawptr[j] += 1
-
-                    child = Draw( d, k, p / denominator )
-                    child[k] -= 1
-                    following.append( child )
-                    
-                else:
-                    num_of_0s += 1
-                
-        # storing length of shifted level of each fixed prefix sublattice
-        for i, f in enumerate( flush ):
-            if f is not None:
-                self.parent._len_tab[i].append( len( following ) - f )
-        
         if following:
             return following
         else:

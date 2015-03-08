@@ -42,10 +42,10 @@ def _combinatorial_generate( root, target=None ):
                     tmp_d[k] -= 1
                     p = reduce(lambda x, y: x * y, map( nCk, root, tmp_d ), 1.0 / nCk( roof, n) )
                     child = core.Draw( tmp_d, k, P=p )
-                    
+
                     following.append( child )
-        previous = following
         ##### end of next level mimic #####
+        previous = following
         yield previous
 
 
