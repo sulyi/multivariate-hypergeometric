@@ -89,7 +89,7 @@ def nCik( n, k ):
     return _m_nCk( n + k - 1, k )
 
 
-#### the hood ####
+# the hood #
 
 
 def _f_nCk( n, k ):

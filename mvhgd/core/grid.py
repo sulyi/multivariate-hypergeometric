@@ -20,7 +20,7 @@ class Grid ( object ):
         self._generator = self._limit_traversal_to( None )
 
     def __repr__( self ):
-        return "Grid(%s, %r)" % (self.algorithm.__class__.__name__, self.root)
+        return "Grid(%s, %r)" % (self.algorithm.__name__, self.root)
 
     def __str__( self ):
         return "Grid instance with %s algorithm and supremum of %s" % (self.root, self.algorithm)

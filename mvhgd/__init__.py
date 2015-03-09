@@ -8,9 +8,9 @@ Created on 2014.08.19.
 """
 # TODO: doc, package
 
-import tester
-import utils
 import algorithms
+import utils
+import tester
 from core import *
 
 # TODO: review doc strings

@@ -17,12 +17,11 @@ class Enumerate( Pretty ):
                 if d[k] > target[k]:
                     tmp_d = list( d )
                     tmp_d[k] -= 1
-                    p = reduce(lambda x, y: x * y, map(nCk, self.parent.root, tmp_d), 1.0 / nCk(self.parent.roof, n+1))
+                    p = reduce( lambda x, y: x * y,
+                                map(nCk, self.parent.root, tmp_d),
+                                1.0 / nCk(self.parent.roof, n + 1) )
                     child = Draw( tmp_d, k, P=p )
 
                     following.append( child )
 
         return following
-
-    def __repr__( self ):
-        return super( Enumerate, self ).__repr__()
