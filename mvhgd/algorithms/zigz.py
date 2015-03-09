@@ -1,5 +1,5 @@
-from core import Pretty
-from core import Draw
+from ..core import Pretty
+from ..core import Draw
 
 
 class Zigzag(Pretty):

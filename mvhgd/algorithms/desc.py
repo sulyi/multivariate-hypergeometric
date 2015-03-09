@@ -1,4 +1,4 @@
-from core import Pretty
+from ..core import Pretty
 
 
 class Descend(Pretty):

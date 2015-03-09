@@ -8,10 +8,10 @@ class Grid ( object ):
     """
     # TODO: doc, Grid
 
-    __slots__ = [ 'root', 'm', 'roof', '_generator', '_len_tab', '_iroot' ]
+    __slots__ = [ 'algorithm', 'root', 'roof', 'm', '_generator', '_len_tab', '_iroot' ]
 
     def __init__( self, algorithm, supremum=[] ):
-        self.factory = algorithm
+        self.algorithm = algorithm
         self.root = Draw( supremum )
         self.m = len( supremum )
         self.roof = sum( self.root )
@@ -20,10 +20,10 @@ class Grid ( object ):
         self._generator = self._limit_traversal_to( None )
 
     def __repr__( self ):
-        return "Grid(%r)" % self.root
+        return "Grid(%s, %r)" % (self.algorithm.__class__.__name__, self.root)
 
     def __str__( self ):
-        return "Grid instance with supremum of %s" % self.root
+        return "Grid instance with %s algorithm and supremum of %s" % (self.root, self.algorithm)
 
     def __iter__(self):
         return self._generator
@@ -63,7 +63,7 @@ class Grid ( object ):
             floor = 0
             target = Draw([0] * self.m)
 
-        previous = Level( self.factory, self, [ self.root ] )
+        previous = Level( self.algorithm, self, [ self.root ] )
         yield previous
         for n in range( floor, self.roof ):
             previous = previous.next_level( n, target )

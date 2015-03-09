@@ -10,6 +10,7 @@ Created on 2014.08.19.
 
 import tester
 import utils
+import algorithms
 from core import *
 
 # TODO: review doc strings

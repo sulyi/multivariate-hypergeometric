@@ -14,7 +14,7 @@ class Pretty( list ):
     def __repr__( self, depth=0 ):
         depth += len(self.__class__.__name__) + 2
         return '%s([ %s\n%s])' % ( self.__class__.__name__, (',\n ' + ' ' * depth).join(
-            i.__repr__( depth + 1 ) if isinstance( i, Pretty ) else repr(i) for i in self ), ' ' * depth )
+            i.__repr__ if isinstance( i, Pretty ) else repr(i) for i in self ), ' ' * depth )
 
     # just keeping Pretty
 
