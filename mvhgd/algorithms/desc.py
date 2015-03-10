@@ -4,8 +4,11 @@ from ..core import Draw
 
 
 class Descend( Pretty ):
-    def __init__( self, parent, iterable ):
+    def __init__( self, parent, iterable, twmatrix=None ):
         self.parent = parent
+        if twmatrix is None:
+            twmatrix = scipy.sparse.csc_matrix( scipy.ones(( 1, len(iterable) )) )
+        self.twmatrix = twmatrix
         super( Descend, self ).__init__( iterable )
 
     def next_level( self, n, target ):
@@ -45,4 +48,4 @@ class Descend( Pretty ):
         twm = scipy.sparse.csc_matrix(( scipy.array(data), scipy.array(indices), scipy.array(indptr) ))
         p = (twm / (self.parent.roof - n)) * scipy.array( [d.P for d in self] )
 
-        return Descend( self.parent, map(Draw, following, gammas, p) )
+        return Descend( self.parent, map(Draw, following, gammas, p), twm )

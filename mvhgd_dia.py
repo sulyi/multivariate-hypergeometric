@@ -123,7 +123,7 @@ def draw_lattice(data, array):
         data = diagram.data
     layer = data.active_layer
     
-    lattice = mvhgd.Grid(array)
+    lattice = mvhgd.Grid(mvhgd.algorithms.Descend, array)
     droot = next(lattice)[0]
     
     root, h1, h2 = dia.get_object_type("Flowchart - Ellipse").create(0, 0)
@@ -133,39 +133,31 @@ def draw_lattice(data, array):
     width = root.properties["elem_width"].value + 1
     layer.add_object(root)
     
-    prev = [(root,0)]
+    prev = [root]
     
     y = 0
     x = 0
         
-    for n, level in enumerate(lattice,1):
+    for level in lattice:
         y += height
         x = width * (len(level) - 1) / -2.0
         
         following = list()
-        drawptr = [ lattice._read_len_tab( n, i ) for i in range( 1, lattice.m ) ]
-        drawptr.append( 0 )
-    
-        for i,drawing in enumerate(level):
-            print i
-            delta = sum(x > 0 for x in drawing)
+
+        for drawing in level:
             o, oh1, oh2 = dia.get_object_type("Flowchart - Ellipse").create(x, y)
             o.properties["text"] = ','.join(map(str, drawing))
-            following.append((o, delta))
+            following.append(o)
             layer.add_object(o)
             x += width
-            for k in range(lattice.m):
-                if drawing[k] < droot[k]:
-                    line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
-                    line.properties["line_colour"] = h2rgb(360.0 / lattice.m * k)
-                    layer.add_object(line)
-                    lh1.connect(prev[drawptr[k]][0].connections[16])
-                    lh2.connect(o.connections[16])
-                    diagram.update_connections(prev[drawptr[k]][0])
-                    drawptr[k] += 1
-                elif drawptr[k] < len(prev) and delta < prev[drawptr[k]][1]:
-                    print n,k
-                    drawptr[k] = drawptr[k-1]-1
+        for r, i in enumerate(level.state.twmatrix.indptr[0:-1]):
+            for j, c in enumerate(level.state.twmatrix.indices[i:level.state.twmatrix.indptr[r + 1]]):
+                line, lh1, lh2 = dia.get_object_type("Standard - Line").create(0, 0)
+#                line.properties["line_colour"] = h2rgb(360.0 / lattice.m * j)
+                layer.add_object(line)
+                lh1.connect(prev[r].connections[16])
+                lh2.connect(following[c].connections[16])
+                diagram.update_connections(prev[r])
 
         prev = following
 
