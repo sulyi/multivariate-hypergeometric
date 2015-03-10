@@ -5,7 +5,7 @@ class Draw ( list ):
     the number of drawn elements in each category is given by an iterable
     """
 
-    __slots__ = ['gamma', 'P']
+    __slots__ = [ 'gamma', 'P' ]
 
     def __init__(self, iterable=None, gamma=0, P=1.0):
         if iterable is not None:
