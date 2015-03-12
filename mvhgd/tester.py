@@ -8,8 +8,7 @@ Created on 2014.10.15.
 """
 
 import time
-import core
-from utils import nCk
+from core import Grid
 
 
 def generate_input_data( seed, concatenation=1 ):
@@ -22,78 +21,37 @@ def generate_input_data( seed, concatenation=1 ):
             yield [ x * d for x in seed ] * i
 
 
-def _combinatorial_generate( root, target=None ):
-    roof = sum( root )
-    m = len( root )
-    
-    floor = 1 if target is None else roof - sum( target )
-    target = target or [ 0 ] * m
-        
-    previous = [ core.Draw( root ) ]
-    yield previous
-    
-    for n in range( floor, roof + 1 ):
-        ######## next level mimic ########
-        following = []
-        for d in previous:
-            for k in range( d.gamma, m ):
-                if d[k] > target[k]:
-                    tmp_d = list( d )
-                    tmp_d[k] -= 1
-                    p = reduce(lambda x, y: x * y, map( nCk, root, tmp_d ), 1.0 / nCk( roof, n) )
-                    child = core.Draw( tmp_d, k, P=p )
+def compare_test(algorithm1, algorithm2, data):
+    g1 = Grid(algorithm1, data)
+    g2 = Grid(algorithm2, data)
 
-                    following.append( child )
-        ##### end of next level mimic #####
-        previous = following
-        yield previous
-
-
-def compare_test(data):
-    g  =  core.Grid(data)
-    cg = _combinatorial_generate(data)
-
-    sct = 0.0
-    st  = 0.0
+    st1 = 0.0
+    st2 = 0.0
     max_delta = 0.0
 
     for _i in range(g.roof):
 
         start = time.clock()
-        level = g.next()
-        st += time.clock() - start
+        level1 = g1.next()
+        st1 += time.clock() - start
 
         start = time.clock()
-        c_level = cg.next()
-        sct += time.clock() - start
+        level2 = g2.next()
+        st2 += time.clock() - start
 
-        for j in range(len(level)):
-            max_delta = max( max_delta, abs( level[j].P - c_level[j].P ) )
+        for j in range(len(level1)):
+            max_delta = max( max_delta, abs( level1[j].P - level2[j].P ) )
 
-    return st, sct, max_delta
+    return st1, st2, max_delta
 
 
-def cputime_test(data):
+def cputime_test(algorithm, data):
     n = 1
     full = 0.0
     while not full:
         for _i in range(n):
             start = time.clock()
-            for _ in core.Grid(data):
-                pass
-            full += time.clock() - start
-        full /= n
-        n *= 10
-    return full, n / 10
-
-
-def c_cputime_test(data):
-    n = 1
-    full = 0.0
-    while not full:
-        for _i in range(n):
-            start = time.clock()
-            for _ in _combinatorial_generate(data):
+            for _ in Grid(algorithm, data):
                 pass
             full += time.clock() - start
         full /= n
