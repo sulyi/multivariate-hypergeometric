@@ -8,8 +8,7 @@ Created on 2013.11.03.
 
 @author: Ákos Sülyi
 """
-
-# TODO: color toggle checkbox
+# TODO: doc
 
 import dia
 
@@ -115,7 +114,6 @@ def mvhgd_cb(data, flags):
 
 def draw_lattice(data, array):
     import mvhgd
-    # FIXME: review diagram creation
     if data:
         diagram = dia.active_display().diagram 
     else:

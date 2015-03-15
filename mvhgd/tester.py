@@ -8,14 +8,14 @@ Created on 2014.10.15.
 """
 
 import time
-from core import Grid
+from .core import Grid
+from sys import stdout
 
 
 def generate_input_data( seed, concatenation=1 ):
-    
     if not hasattr( concatenation, '__iter__' ):
         concatenation = [ concatenation ]
-        
+
     for i, c in enumerate( concatenation, 1 ):
         for d in range(1, c + 1):
             yield [ x * d for x in seed ] * i
@@ -29,8 +29,7 @@ def compare_test(algorithm1, algorithm2, data):
     st2 = 0.0
     max_delta = 0.0
 
-    for _i in range(g.roof):
-
+    for _ in range(g1.roof):
         start = time.clock()
         level1 = g1.next()
         st1 += time.clock() - start
@@ -51,9 +50,12 @@ def cputime_test(algorithm, data):
     while not full:
         for _i in range(n):
             start = time.clock()
-            for _ in Grid(algorithm, data):
-                pass
+            g = Grid(algorithm, data)
+            for i, _l in enumerate(g):
+                stdout.write("%s : %s / %s\r" % (data, g.roof, i))
+                stdout.flush()
             full += time.clock() - start
         full /= n
         n *= 10
-    return full, n / 10
+        stdout.write("\n")
+    return full, n // 10

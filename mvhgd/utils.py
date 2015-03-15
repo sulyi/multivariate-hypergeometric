@@ -94,31 +94,38 @@ def nCik( n, k ):
 
 def _f_nCk( n, k ):
     """factorial formula of binomial coefficient"""
-    return factorial( n ) / factorial( k ) / factorial( n - k )
+    return factorial( n ) // factorial( k ) // factorial( n - k )
 
 
 def _m_nCk( n, k ):
     """multiplicative formula of binomial coefficient"""
     if k > n or k < 0 or n < 0:
         raise ValueError( "Can't choose %d from %d" % ( k, n ) )
-    if k > n / 2:
+    if k > n // 2:
         nk = k
         k = n - k
     else:
         nk = n - k
-    return reduce(lambda y, x: y * ( nk + x) / x, range(1, k + 1), 1)
+
+    b = 1
+    for i in range(1, k + 1):
+        b *= (nk + i)
+        b //= i
+    return b
 
 
 if __name__ == '__main__':
     from timeit import timeit
+    from sys import stdout
+
     for function in sorted( dir(), key=lambda name: name[::-1] ):
         if not function.startswith('_', 1) and function.startswith('_'):
-            print "%s\n" % function
+            print("%s\n" % function)
             for elements in range(10, 50, 10):
                 total = 0
                 for choose in range(elements + 1):
                     elapsed_time = timeit("mvhgd.utils.%s(%d,%d)" % (function, elements, choose),
                                           "import mvhgd.utils", number=10000)
                     total += elapsed_time
-                    print (elements, choose), ':', elapsed_time,
-                print "\n\ntotal: %f\n" % total
+                    stdout.write('(%s, %s) : %s ' % (elements, choose, elapsed_time))
+                print("\n\ntotal: %f\n" % total)

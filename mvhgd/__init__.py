@@ -8,10 +8,10 @@ Created on 2014.08.19.
 """
 # TODO: doc, package
 
-import algorithms
-import utils
-import tester
-from core import *
+#from . import algorithms
+#from . import utils
+#from . import tester
+#from .core import *
 
 # TODO: review doc strings
 # TODO: packaging, setup.py

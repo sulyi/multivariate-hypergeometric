@@ -1,12 +1,11 @@
-from draw import Draw
-from level import Level
+from .draw import Draw
+from .level import Level
 
 
 class Grid ( object ):
+    """
 
     """
-    """
-    # TODO: doc, Grid
 
     __slots__ = [ 'algorithm', 'root', 'roof', 'm', '_generator', '_len_tab', '_iroot' ]
 
@@ -37,16 +36,14 @@ class Grid ( object ):
         return next( self._generator )
 
     def limit_traversal_to( self, target=None ):
-        self._generator = self._limit_traversal_to( target )
-
-    def _limit_traversal_to( self, target ):
-
         """
         """
         # TODO: doc, limit_to
+        self._generator = self._limit_traversal_to( target )
 
+    def _limit_traversal_to( self, target ):
         if target is not None:
-            if len(target) == 1:
+            if not hasattr(target, '__len__'):
                 floor = self.roof - int(target)
                 target = Draw([0] * self.m)
                 if not 0 <= floor <= self.roof:

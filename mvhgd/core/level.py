@@ -1,5 +1,5 @@
-from draw import Draw
-from pretty import Pretty
+from .draw import Draw
+from .pretty import Pretty
 
 
 class Level( object ):
@@ -12,7 +12,7 @@ class Level( object ):
     __slots__ = [ 'state' ]
 
     def __init__(self, algorithm, parent, iterable=[]):
-        from grid import Grid
+        from .grid import Grid
 
         if not issubclass(algorithm, Pretty):
             raise TypeError("algorithm is expected to be Pretty")
