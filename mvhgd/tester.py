@@ -8,6 +8,8 @@ Created on 2014.10.15.
 """
 # TODO/FIXME: doc,coding
 
+from __future__ import print_function
+
 import time
 from .core import Grid
 
@@ -52,9 +54,9 @@ def cputime_test(algorithm, data):
             start = time.clock()
             g = Grid(algorithm, data)
             for i, _l in enumerate(g):
-                print "%s : %s / %s\r" % (data, g.roof, i),
+                print("%s : %s / %s\r" % (data, g.roof, i), end='', flush=True)
             full += time.clock() - start
         full /= n
         n *= 10
-        print
+        print()
     return full, n // 10

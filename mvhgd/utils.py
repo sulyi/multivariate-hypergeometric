@@ -5,6 +5,8 @@ Collection of combinatorial functions
 and different implementations of them under the hood.
 """
 
+from __future__ import print_function
+
 from math import factorial
 
 __all__ = [ 'nCk', 'nCik', 'LevelLength']
@@ -128,12 +130,12 @@ if __name__ == '__main__':
 
     for function in sorted( dir(), key=lambda name: name[::-1] ):
         if not function.startswith('_', 1) and function.startswith('_'):
-            print "%s\n" % function
+            print("%s\n" % function)
             for elements in range(10, 50, 10):
                 total = 0
                 for choose in range(elements + 1):
                     elapsed_time = timeit("mvhgd.utils.%s(%d,%d)" % (function, elements, choose),
                                           "import mvhgd.utils", number=10000)
                     total += elapsed_time
-                    print '(%s, %s) : %s ' % (elements, choose, elapsed_time),
-                print "\n\ntotal: %f\n" % total
+                    print('(%s, %s) : %s ' % (elements, choose, elapsed_time),end=' ')
+                print("\n\ntotal: %f\n" % total)
