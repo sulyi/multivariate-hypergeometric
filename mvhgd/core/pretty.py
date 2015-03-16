@@ -1,7 +1,7 @@
 class Pretty( list ):
      
     """
-    overrides output string formats
+    Override output string formats to be able to keep indentation.
     """
  
     def __init__( self, iterable=[] ):

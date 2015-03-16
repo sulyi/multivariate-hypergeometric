@@ -6,10 +6,10 @@ Created on 2014.10.15.
 
 @author:  Ákos Sülyi
 """
+# TODO/FIXME: doc,coding
 
 import time
 from .core import Grid
-from sys import stdout
 
 
 def generate_input_data( seed, concatenation=1 ):
@@ -52,10 +52,9 @@ def cputime_test(algorithm, data):
             start = time.clock()
             g = Grid(algorithm, data)
             for i, _l in enumerate(g):
-                stdout.write("%s : %s / %s\r" % (data, g.roof, i))
-                stdout.flush()
+                print "%s : %s / %s\r" % (data, g.roof, i),
             full += time.clock() - start
         full /= n
         n *= 10
-        stdout.write("\n")
+        print
     return full, n // 10

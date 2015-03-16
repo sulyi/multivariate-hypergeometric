@@ -1,8 +1,8 @@
 class Draw ( list ):
 
     """
-    an event happened by drawing elements from an urn containing elements falling under different categories,
-    the number of drawn elements in each category is given by an iterable
+    An event happened by drawing elements from an urn containing elements falling under different categories.
+    The number of elements still remaining in each category is given by an iterable.
     """
 
     __slots__ = [ 'gamma', 'P' ]

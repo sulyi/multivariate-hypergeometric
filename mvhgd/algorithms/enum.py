@@ -9,8 +9,6 @@ class Enumerate( Pretty ):
         super( Enumerate, self ).__init__( iterable )
 
     def next_level( self, n, target ):
-        #n = self.parent.roof - denominator
-
         following = Enumerate( self.parent, [] )
         for d in self:
             for k in range( d.gamma, self.parent.m ):

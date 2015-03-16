@@ -8,7 +8,6 @@ class Zigzag( Pretty ):
         super( Zigzag, self ).__init__( iterable )
 
     def next_level( self, n, target ):
-        #n = self.parent.roof - denominator
         denominator = self.parent.roof - n
 
         flush = [ None ] * self.parent.m

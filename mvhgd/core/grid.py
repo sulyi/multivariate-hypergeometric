@@ -4,7 +4,7 @@ from .level import Level
 
 class Grid ( object ):
     """
-
+    A generator enumerating Levels of Draws, see also there.
     """
 
     __slots__ = [ 'algorithm', 'root', 'roof', 'm', '_generator', '_len_tab', '_iroot' ]
@@ -16,7 +16,7 @@ class Grid ( object ):
         self.roof = sum( self.root )
         self._len_tab = [ [1] for _ in range(self.m) ]
         self._iroot = [ sum(self.root[:i]) for i in range(self.m) ]
-        self._generator = self._limit_traversal_to( None )
+        self._generator = self.generator()
 
     def __repr__( self ):
         return "Grid(%s, %r)" % (self.algorithm.__name__, self.root)
@@ -27,21 +27,22 @@ class Grid ( object ):
     def __iter__(self):
         return self._generator
 
-    # Python 3 compatibility
-    def __next__(self):
-        return next( self._generator )
-
-    # Python 2 compatibility
     def next(self):
         return next( self._generator )
 
     def limit_traversal_to( self, target=None ):
         """
+        Set the internal _generator of the Grid.
+        see also: generator
         """
-        # TODO: doc, limit_to
-        self._generator = self._limit_traversal_to( target )
+        self._generator = self.generator( target )
 
-    def _limit_traversal_to( self, target ):
+    def generator( self, target=None ):
+        """
+        Create a generator to enumerate Levels from root of the Grid.
+        Argument target limits traversal, can be int() or iterable, see also Level.next_level.
+        """
+
         if target is not None:
             if not hasattr(target, '__len__'):
                 floor = self.roof - int(target)

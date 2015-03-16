@@ -1,42 +1,43 @@
 #!/usr/bin/env python
 
 """
-a collection of combinatorial functions
-and different implementations of them under the hood
+Collection of combinatorial functions
+and different implementations of them under the hood.
 """
 
 from math import factorial
 
-__all__ = [ 'nCk', 'nCik', 'Dosage' ]
+__all__ = [ 'nCk', 'nCik', 'LevelLength']
 
 
-class Dosage( object ):
-# FIXME: this needs a better name
+class LevelLength( object ):
 
     """
+    Create an agent to calculates number of all possible Draw on any Level.
+    About argument supremum see class Grid.
+    At initialization power_set_ordered_by_sums is called, see also there.
+    Read length of nth Level by calling precalculate_length, see also there.
     """
-    # TODO: doc, Dosage
 
-    def __init__( self, grid ):
-        # FIXME: this also needs a better name
-        self.patient = grid
-        # FIXME: this does not seem ok!
-        self._psobs = self._power_set_ordered_by_sums
+    def __init__( self, supremum ):
+        self.root = supremum
+        self._psobs = self.power_set_ordered_by_sums(supremum)
 
-    @property
-    def _power_set_ordered_by_sums( self ):
+    @classmethod
+    def power_set_ordered_by_sums( cls, base_set ):
 
         """
+        Enumerate sum of elements in each subset by ascending order.
+        Source: http://math.stackexchange.com/questions/89419/
         """
-        # TODO: doc, _power_set_ordered_by_sums, http://math.stackexchange.com/questions/89419/
 
         # FIXME: lose ordering input
-        n = list( self.patient.root )
+        n = list( base_set )
         n.sort()
 
         s = [(0, 0)]
         l = [[]]
-        a = [ 0 ] * self.patient.m
+        a = [ 0 ] * len(base_set)
 
         while any( a is not None for a in a):
             min_s = None
@@ -68,24 +69,24 @@ class Dosage( object ):
     def precalculate_length( self, n ):
 
         """
+        Calculate length of nth Level using sum of combinations with replacement.
         """
-        # TODO: doc, calculate length
 
         members = 0
         collect = 0
         while n >= sum( self._psobs[members] ):
-            collect += (-1) ** self._psobs[members][0] * nCik( self.patient.m, n - sum(self._psobs[members]) )
+            collect += (-1) ** self._psobs[members][0] * nCik( len(self.root), n - sum(self._psobs[members]) )
             members += 1
         return collect
 
 
 def nCk( n, k ):
-    """n choose k"""
+    """Combination n choose k."""
     return _m_nCk( n, k )
 
 
 def nCik( n, k ):
-    """n choose k with replacement"""
+    """Combination n choose k with replacement."""
     return _m_nCk( n + k - 1, k )
 
 
@@ -93,12 +94,12 @@ def nCik( n, k ):
 
 
 def _f_nCk( n, k ):
-    """factorial formula of binomial coefficient"""
+    """Factorial formula of binomial coefficient."""
     return factorial( n ) // factorial( k ) // factorial( n - k )
 
 
 def _m_nCk( n, k ):
-    """multiplicative formula of binomial coefficient"""
+    """Multiplicative formula of binomial coefficient."""
     if k > n or k < 0 or n < 0:
         raise ValueError( "Can't choose %d from %d" % ( k, n ) )
     if k > n // 2:
@@ -106,7 +107,6 @@ def _m_nCk( n, k ):
         k = n - k
     else:
         nk = n - k
-
     b = 1
     for i in range(1, k + 1):
         b *= (nk + i)
@@ -114,18 +114,26 @@ def _m_nCk( n, k ):
     return b
 
 
+def __r_nCk( n, k ):
+    """Recursive formula of binomial coefficient."""
+    # recursion is bad, hence it starts: __
+    if k == 0 or n == k:
+        return 1
+    else:
+        return __r_nCk(n - 1, k - 1) + __r_nCk(n - 1, k)
+
+
 if __name__ == '__main__':
     from timeit import timeit
-    from sys import stdout
 
     for function in sorted( dir(), key=lambda name: name[::-1] ):
         if not function.startswith('_', 1) and function.startswith('_'):
-            print("%s\n" % function)
+            print "%s\n" % function
             for elements in range(10, 50, 10):
                 total = 0
                 for choose in range(elements + 1):
                     elapsed_time = timeit("mvhgd.utils.%s(%d,%d)" % (function, elements, choose),
                                           "import mvhgd.utils", number=10000)
                     total += elapsed_time
-                    stdout.write('(%s, %s) : %s ' % (elements, choose, elapsed_time))
-                print("\n\ntotal: %f\n" % total)
+                    print '(%s, %s) : %s ' % (elements, choose, elapsed_time),
+                print "\n\ntotal: %f\n" % total
