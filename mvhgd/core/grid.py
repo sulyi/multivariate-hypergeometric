@@ -36,6 +36,7 @@ class Grid ( object ):
         see also: generator
         """
         self._generator = self.generator( target )
+        return self
 
     def generator( self, target=None ):
         """
@@ -45,12 +46,12 @@ class Grid ( object ):
 
         if target is not None:
             if not hasattr(target, '__len__'):
-                floor = self.roof - int(target)
+                roof = int(target)
                 target = Draw([0] * self.m)
-                if not 0 <= floor <= self.roof:
+                if not 0 <= roof <= self.roof:
                     raise ValueError( "argument should be between Grid.roof (%d) and 0" % self.roof )
             elif len(target) == self.m:
-                floor = sum(target)
+                roof = sum(target)
                 target = Draw(target)
                 if not Draw([0] * self.m) <= target <= self.root:
                     raise ValueError( "argument should be between %s and %s" % ([0] * self.m, list(self.root)) )
@@ -58,12 +59,12 @@ class Grid ( object ):
                 raise ValueError( "argument has different number of categories (%d) than Grid (%d)" %
                                   (len(target), self.m) )
         else:
-            floor = 0
+            roof = self.roof
             target = Draw([0] * self.m)
 
         previous = Level( self.algorithm, self, [ self.root ] )
         yield previous
-        for n in range( floor, self.roof ):
+        for n in range( roof ):
             previous = previous.next_level( n, target )
             yield previous
 

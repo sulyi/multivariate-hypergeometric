@@ -5,7 +5,7 @@ class Level( object ):
 
     __slots__ = [ 'state' ]
 
-    def __init__(self, algorithm, parent, iterable=[]):
+    def __init__( self, algorithm, parent, iterable=[] ):
         from .grid import Grid
         from .draw import Draw
         from .pretty import Pretty
@@ -23,7 +23,7 @@ class Level( object ):
     def P(self):
         return (d.P for d in self.state)
 
-    def next_level(self, n=None, target=None):
+    def next_level( self, n=None, target=None ):
 
         """
         Enumerate the next Level.
@@ -45,29 +45,29 @@ class Level( object ):
 
     # proxies #
 
-    def __str__(self):
+    def __str__( self ):
         return str(self.state)
 
-    def __repr__(self):
-        algorithm_param = self.state.__class__.__name__
-        parent_param = repr(self.state.parent)
-        return "Level(%s, %s, %s)" % ( algorithm_param,
-                                       parent_param,
-                                       self.state.__repr__(len(algorithm_param) + len(parent_param) + 10) )
+    def __repr__( self, depth=1 ):
+        depth += 5
+        return "Level(%s, %r,\n%s%s)" % ( self.state.__class__.__name__,
+                                          self.state.parent,
+                                          ' ' * depth,
+                                          self.state.__repr__(depth + 1) )
 
-    def __len__(self):
+    def __len__( self ):
         return len(self.state)
 
-    def __getitem__(self, key):
+    def __getitem__( self, key ):
         if isinstance(key, slice):
             return self.state.__getitem__(key)
         return self.state.__getitem__(key)
 
-    def __getslice__(self, i, j):
+    def __getslice__( self, i, j ):
         return self.state.__getslice__(i, j)
 
-    def __setslice__(self, i, j, sequence):
+    def __setslice__( self, i, j, sequence ):
         return self.state.__setslice__(i, j, sequence)
 
-    def __delslice__(self, i, j):
+    def __delslice__( self, i, j ):
         return self.state.__delslice__(i, j)

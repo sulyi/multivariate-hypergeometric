@@ -22,7 +22,7 @@ def generate_input_data( seed, concatenation=1 ):
             yield [ x * d for x in seed ] * i
 
 
-def compare_test(algorithm1, algorithm2, data):
+def compare_test( algorithm1, algorithm2, data ):
     g1 = Grid(algorithm1, data)
     g2 = Grid(algorithm2, data)
 
@@ -45,7 +45,7 @@ def compare_test(algorithm1, algorithm2, data):
     return st1, st2, max_delta
 
 
-def cputime_test(algorithm, data):
+def cputime_test( algorithm, data ):
     n = 1
     full = 0.0
     while not full:
