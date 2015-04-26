@@ -7,7 +7,10 @@ class Descend( Pretty ):
     def __init__( self, parent, iterable, twmatrix=None ):
         self.parent = parent
         if twmatrix is None:
-            twmatrix = scipy.sparse.csc_matrix( scipy.ones(( 1, len(iterable) )) )
+            if isinstance(iterable, Descend):
+                twmatrix = iterable.twmatrix
+            else:
+                twmatrix = scipy.sparse.csc_matrix( scipy.ones(( 1, len(iterable) )) )
         self.twmatrix = twmatrix
         super( Descend, self ).__init__( iterable )
 
@@ -20,7 +23,7 @@ class Descend( Pretty ):
         indptr = [ 0 ]
 
         for d in self:
-            delta = sum( x > 0 for x in d[:d.gamma] )
+            delta = sum( x > target[j] for j, x in enumerate(d[:d.gamma]) )
             num_of_0s = d.gamma - delta
 
             for i, k in enumerate(d):
@@ -38,10 +41,10 @@ class Descend( Pretty ):
                 else:
                     if k > target[i]:
                         indices.append( drawptr[i] )
-                        data.append(k)
+                        data.append( k )
                         drawptr[i] += 1
                     elif ( drawptr[i] < len(following) and
-                           sum( x > 0 for x in following[drawptr[i]][:gammas[drawptr[i]]] ) >= delta ):
+                           sum( x > target[j] for j, x in enumerate(following[drawptr[i]][:gammas[drawptr[i]]]) ) >= delta ):
                         drawptr[ i ] = len(following)
 
             indptr.append( len(indices) )

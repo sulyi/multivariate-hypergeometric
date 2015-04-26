@@ -39,14 +39,14 @@ class Level( object ):
 
         if following:
             self.state = following
-            return self
+            return Level( following.__class__, following.parent, following)
         else:
             raise ValueError("Nothing follows an empty Level.")
 
     # proxies #
 
-    def __str__( self ):
-        return str(self.state)
+    def __str__( self, depth=1 ):
+        return self.state.__str__(depth)
 
     def __repr__( self, depth=1 ):
         depth += 5

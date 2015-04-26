@@ -14,10 +14,10 @@ class Draw(list):
                 raise TypeError("argument must support iteration")
         else:
             super(Draw, self).__init__()
-        self.gamma = gamma
+        self.gamma = int(gamma)
         # fractional data type for P would be be swell as far as numeric stability goes,
         # but again that would make values grow factorially in size
-        self.P = P
+        self.P = float(P)
 
     def __gt__( self, other ):
         if len(self) != len(other):
@@ -45,7 +45,7 @@ class Draw(list):
         return super(Draw, self).__eq__(other) and self.gamma == other.gamma
 
     def __str__( self ):
-        return '%s ~ (%d) - %r' % ( list(self),
+        return '%s ~ (%d) - %f' % ( list(self),
                                     self.gamma,
                                     self.P
                                     )

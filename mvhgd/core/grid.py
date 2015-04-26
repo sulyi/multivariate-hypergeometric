@@ -14,8 +14,8 @@ class Grid ( object ):
         self.root = Draw( supremum )
         self.m = len( supremum )
         self.roof = sum( self.root )
-        self._len_tab = [ [1] for _ in range(self.m) ]
-        self._iroot = [ sum(self.root[:i]) for i in range(self.m) ]
+        self._len_tab = None  # set in generator
+        self._iroot = None  # set in generator
         self._generator = self.generator()
 
     def __repr__( self ):
@@ -30,9 +30,10 @@ class Grid ( object ):
     def next(self):
         return next( self._generator )
 
-    def limit_traversal_to( self, target=None ):
+    def limit_to( self, target=None ):
         """
-        Set the internal _generator of the Grid.
+        This just helps to keep Grid type.
+        Sets the internal _generator of the Grid and returns self.
         see also: generator
         """
         self._generator = self.generator( target )
@@ -49,24 +50,26 @@ class Grid ( object ):
                 roof = int(target)
                 target = Draw([0] * self.m)
                 if not 0 <= roof <= self.roof:
-                    raise ValueError( "argument should be between Grid.roof (%d) and 0" % self.roof )
+                    raise ValueError( "argument should be between 0 and Grid.roof (%d)" % self.roof )
             elif len(target) == self.m:
-                roof = sum(target)
+                roof = self.roof - sum(target)
                 target = Draw(target)
                 if not Draw([0] * self.m) <= target <= self.root:
                     raise ValueError( "argument should be between %s and %s" % ([0] * self.m, list(self.root)) )
             else:
-                raise ValueError( "argument has different number of categories (%d) than Grid (%d)" %
+                raise ValueError( "argument has different number of categories (%d) than Grid.roof (%d)" %
                                   (len(target), self.m) )
         else:
             roof = self.roof
             target = Draw([0] * self.m)
 
+        self._iroot = [ sum(self.root[:i]) - sum(target[:i]) for i in range(self.m) ]
+        self._len_tab = [ [1] for _ in range(self.m) ]
+
         previous = Level( self.algorithm, self, [ self.root ] )
         yield previous
         for n in range( roof ):
-            previous = previous.next_level( n, target )
-            yield previous
+            yield previous.next_level( n, target )
 
     def _read_len_tab( self, n, i ):
         # unsafe, since _len_tab is filled during generation

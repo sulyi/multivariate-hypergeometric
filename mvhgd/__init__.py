@@ -8,6 +8,7 @@ Created on 2014.08.19.
 """
 # TODO: doc, package
 # TODO: add suboptimal zigzag algorithm for demonstration purposes
+# TODO: change most int to uint
 
 from . import algorithms
 from . import utils

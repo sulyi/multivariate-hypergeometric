@@ -17,8 +17,7 @@ class Zigzag( Pretty ):
         following = Zigzag( self.parent, [] )
 
         for i, d in enumerate( self ):
-            num_of_0s = d.gamma - sum( x > 0 for x in d[:d.gamma] )
-
+            num_of_0s = d.gamma - sum( x > target[j] for j, x in enumerate(d[:d.gamma]) )
             for k in range( d.gamma, self.parent.m ):
                 flush[ k - num_of_0s ] = len( following )
 
@@ -32,7 +31,7 @@ class Zigzag( Pretty ):
                         if j != k and c < self.parent.root[j]:
                             # skipping
                             if drawptr[j] <= i:
-                                drawptr[j] = i + ( self.parent._read_len_tab( n + sum(d[:j]), j + 1 ) or 1 )
+                                drawptr[j] = i + ( self.parent._read_len_tab( n - sum(target) + sum(d[:j]), j + 1 ) or 1 )
                             # stepping
                             p += self[drawptr[j]].P * (c + 1)
                             drawptr[j] += 1

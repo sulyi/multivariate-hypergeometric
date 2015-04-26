@@ -6,7 +6,7 @@ Created on 2014.10.15.
 
 @author:  Ákos Sülyi
 """
-# TODO/FIXME: doc,coding
+# TODO: doc, coding
 
 from sys import stdout
 import time
