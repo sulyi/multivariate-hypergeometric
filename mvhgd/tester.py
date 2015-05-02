@@ -8,7 +8,7 @@ Created on 2014.10.15.
 """
 # TODO: doc, coding
 
-from sys import stdout
+from sys import stderr  # more suppressible than stdout
 import time
 from .core import Grid
 
@@ -45,7 +45,7 @@ def compare_test( algorithm1, algorithm2, data ):
     return st1, st2, max_delta
 
 
-def cputime_test( algorithm, data ):
+def cputime_test( algorithm, data, verbose=False ):
     n = 1
     full = 0.0
     while not full:
@@ -53,10 +53,12 @@ def cputime_test( algorithm, data ):
             start = time.clock()
             g = Grid(algorithm, data)
             for i, _l in enumerate(g):
-                stdout.write("%s : %s / %s\r" % (data, g.roof, i))
-                stdout.flush()
+                if verbose:
+                    stderr.write("%s : %s / %s\r" % (data, g.roof, i))
+                    stderr.flush()
             full += time.clock() - start
         full /= n
         n *= 10
-        stdout.write('\n')
+        if verbose:
+            stderr.write('\n')
     return full, n // 10
