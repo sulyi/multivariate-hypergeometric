@@ -1,17 +1,11 @@
 from core import Draw
-#from core import Level
-
-
-#self.algorithm = algorithm
-
-#self.root = Draw( supremum )
-#self.m = len( supremum )
+from core import Pretty
 
 _len_tab = None  # set in generator
 _iroot = None  # set in generator
 
 
-def generator( algorithm, root, target=None ):
+def generator(root, target=None ):
     """
     Create a generator to enumerate Levels from root of the Grid.
     Argument target limits traversal, can be int() or iterable, see also Level.next_level.
@@ -25,8 +19,6 @@ def generator( algorithm, root, target=None ):
         if not hasattr(target, '__len__'):
             roof = int(target)
             target = Draw([0] * m)
-            #if not 0 <= roof <= self.roof:
-            #    raise ValueError( "argument should be between 0 and Grid.roof (%d)" % self.roof )
         elif len(target) == m:
             roof = sum( root ) - sum(target)
             target = Draw(target)
@@ -37,6 +29,7 @@ def generator( algorithm, root, target=None ):
                               (len(target), m) )
     else:
         target = Draw([0] * m)
+        roof = sum(root)
 
     _iroot = [ sum(root[:i]) - sum(target[:i]) for i in range(m) ]
     _len_tab = [ [1] for _ in range(m) ]
@@ -75,7 +68,7 @@ def next_level( level, root, roof, n=None, target=None ):
     drawptr = [ _read_len_tab( n, i ) for i in range( 1, m ) ]
     drawptr.append( 0 )
 
-    following = []
+    following = Pretty()
 
     for i, d in enumerate( level ):
         num_of_0s = d.gamma - sum( x > target[j] for j, x in enumerate(d[:d.gamma]) )
